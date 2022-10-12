@@ -10,12 +10,19 @@ class Player:
         self.jump_frame_flag = True
         self.sprite_size = 66
         self.dir = [0, 0]            # [+면 우측이동 -면 좌측이동, 점프 스피드]
+        self.enter_flag = False
 
     def draw(self):
         if self.pos[1] == 90:
-            self.idle_motion()
+            if self.enter_flag:
+                self.dive_motion()
+            else:
+                self.idle_motion()
         else:
-            self.jump_motion()
+            if self.enter_flag:
+                self.spike_motion()
+            else:
+                self.jump_motion()
 
     def move(self):
         self.pos[0] += self.dir[0] * 5      # 좌우이동
@@ -71,6 +78,12 @@ class Player:
                 if self.frame == 0:
                     self.frame_flag = True
 
+    def dive_motion(self):
+        pass
+
+    def spike_motion(self):
+        pass
+
     def update(self):
         self.update_frame += 1
         self.draw()
@@ -105,6 +118,7 @@ def handle_events():
 
 open_canvas()
 sprite_sheet = load_image('Resource/Image/sprite_sheet.png')
+reverse_sprite = load_image('Resource/Image/sprite_sheet_reverse.png')
 
 running = True
 P1 = Player()
@@ -113,7 +127,6 @@ while running:
     clear_canvas()
 
     P1.update()
-
 
     update_canvas()
     handle_events()
