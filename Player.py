@@ -1,7 +1,6 @@
 from pico2d import *
-import Pikachu
-
-class Player:
+import Sprite
+class character:
     def __init__(self):
         self.pos = [90, 90]   # x, y 위치
         self.frame = 0
@@ -36,12 +35,12 @@ class Player:
 
     def jump_motion(self):
         if self.jump_frame == 0:
-            Pikachu.sprite_sheet.clip_draw(self.jump_frame * self.sprite_size,
+            Sprite.sprite_sheets[0].clip_draw(self.jump_frame * self.sprite_size,
                                    885 - (266 + self.sprite_size * 2),
                                    self.sprite_size, self.sprite_size,
                                    self.pos[0], self.pos[1])
         else:
-            Pikachu.sprite_sheet.clip_draw((self.jump_frame + 4) * self.sprite_size,
+            Sprite.sprite_sheets[0].clip_draw((self.jump_frame + 4) * self.sprite_size,
                                    885 - (266 + self.sprite_size),
                                    self.sprite_size, self.sprite_size,
                                    self.pos[0], self.pos[1])
@@ -65,7 +64,7 @@ class Player:
                     self.jump_frame_flag = True
 
     def idle_motion(self):
-        Pikachu.sprite_sheet.clip_draw(self.frame * self.sprite_size,
+        Sprite.sprite_sheets[0].clip_draw(self.frame * self.sprite_size,
                                885 - (266 + self.sprite_size),
                                self.sprite_size, self.sprite_size,
                                self.pos[0], self.pos[1])

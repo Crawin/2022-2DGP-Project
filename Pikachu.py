@@ -1,5 +1,6 @@
 from pico2d import *
 import Player
+import Sprite
 Jump_Speed = 20
 
 def handle_events():
@@ -24,15 +25,14 @@ def handle_events():
                 P1.dir[0] -= 1
             elif event.key == SDLK_LEFT:
                 P1.dir[0] += 1
-
     pass
 
 open_canvas()
-sprite_sheet = load_image('Resource/Image/sprite_sheet.png')
-reverse_sprite = load_image('Resource/Image/sprite_sheet_reverse.png')
+
+Sprite.load_sprites()
 
 running = True
-P1 = Player()
+P1 = Player.character()
 
 while running:
     clear_canvas()
