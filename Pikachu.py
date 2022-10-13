@@ -11,5 +11,6 @@ while running:
     Player.update()
     delay(0.01)
 
+Player.exit()
 close_canvas()
 
