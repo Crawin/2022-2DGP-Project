@@ -31,7 +31,6 @@ class player:
         self.pos[0] += self.dir[0] * 5      # 좌우이동
         self.pos[1] += self.dir[1]          # 점프
         if self.pos[1] > 90:
-            print(self.pos[1])
             self.dir[1] -= 1
         else:
             self.dir[1] = 0
@@ -128,7 +127,6 @@ def handle_events():
         if event.type == SDL_QUIT:
             running = False
         elif event.type == SDL_KEYDOWN:
-            if not P1.motion_flag:
                 if event.key == SDLK_g:
                     P1.dir[0] += 1
                 elif event.key == SDLK_d:
@@ -141,7 +139,6 @@ def handle_events():
                 elif event.key == SDLK_ESCAPE:
                     running = False
         elif event.type == SDL_KEYUP:
-            if not P1.motion_flag:
                 if event.key == SDLK_g:
                     P1.dir[0] -= 1
                 elif event.key == SDLK_d:
