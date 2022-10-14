@@ -110,12 +110,13 @@ class player:
         if self.motion == 'jump':
             if self.pos[1] <= 90:
                 self.motion = 'idle'
+        if self.dir[2]:
+            self.motion = 'jump'
         if self.motion == 'dive':
             if self.dive_frame[1] >= 5:
                 self.motion = 'idle'
                 self.dive_frame[0] = 0
                 self.dive_frame[1] = 0
-
 
     def update(self):
         self.move()
@@ -123,9 +124,7 @@ class player:
         self.update_motion()
         self.update_frame += 1
 
-
 P1 = None
-
 
 def enter():
     global P1
@@ -160,7 +159,6 @@ def handle_events():
                 P1.dir[0] += 1
             elif event.key == SDLK_r:
                 P1.dir[2] = False
-    pass
 
 def update():
     clear_canvas()
