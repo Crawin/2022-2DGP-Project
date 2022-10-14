@@ -9,7 +9,7 @@ class player:
         self.update_frame = 0               # 입력 딜레이가 0.01이여야 조작감이 좋아서 애니메이션은 딜레이가 0.1이 되도록 하는 변수
         self.idle_frame = [True, 0]         # True 면 프레임 +, False 면 프레임 -
         self.jump_frame = [True, 1]         # Flag, frame
-        self.sprite_size = 66
+
         self.dir = [0, 0, False]            # [+면 우측이동 -면 좌측이동, 점프 스피드, True면 눌린상태]
         self.spike_frame = [True, 0]        # Flag, frame
         self.dive_frame = [0, 0]            # frame, Timer
@@ -32,9 +32,9 @@ class player:
             self.pos[1] = 90
 
     def idle_motion(self):
-        Sprite.sprite_sheets[0].clip_draw(self.idle_frame[1] * self.sprite_size,
-                               885 - (266 + self.sprite_size),
-                               self.sprite_size, self.sprite_size,
+        Sprite.sprite_sheets[0].clip_draw(self.idle_frame[1] * Sprite.sprite_size,
+                               885 - (266 + Sprite.sprite_size),
+                               Sprite.sprite_size, Sprite.sprite_size,
                                self.pos[0], self.pos[1])
         if self.update_frame % 10 == 0:
             if self.idle_frame[0]:
@@ -48,14 +48,14 @@ class player:
 
     def jump_motion(self):
         if self.jump_frame[1] == 0:
-            Sprite.sprite_sheets[0].clip_draw(self.jump_frame[1] * self.sprite_size,
-                                   885 - (266 + self.sprite_size * 2),
-                                   self.sprite_size, self.sprite_size,
+            Sprite.sprite_sheets[0].clip_draw(self.jump_frame[1] * Sprite.sprite_size,
+                                   885 - (266 + Sprite.sprite_size * 2),
+                                   Sprite.sprite_size, Sprite.sprite_size,
                                    self.pos[0], self.pos[1])
         else:
-            Sprite.sprite_sheets[0].clip_draw((self.jump_frame[1] + 4) * self.sprite_size,
-                                   885 - (266 + self.sprite_size),
-                                   self.sprite_size, self.sprite_size,
+            Sprite.sprite_sheets[0].clip_draw((self.jump_frame[1] + 4) * Sprite.sprite_size,
+                                   885 - (266 + Sprite.sprite_size),
+                                   Sprite.sprite_size, Sprite.sprite_size,
                                    self.pos[0], self.pos[1])
 
         if self.update_frame % 5 == 0:
@@ -78,19 +78,22 @@ class player:
 
     def dive_motion(self):
 
-        Sprite.sprite_sheets[0].clip_draw((self.dive_frame[0] + 1) * self.sprite_size,
-                               885 - (266 + self.sprite_size * 3),
-                               self.sprite_size, self.sprite_size,
+        Sprite.sprite_sheets[0].clip_draw((self.dive_frame[0] + 1) * Sprite.sprite_size,
+                               885 - (266 + Sprite.sprite_size * 3),
+                               Sprite.sprite_size, Sprite.sprite_size,
                                self.pos[0], self.pos[1])
         if self.update_frame % 10 == 0:
-            self.pos[0] += 15
+            self.pos[0] += 20
             self.dive_frame[1] += 1     # 타이머 증가
             self.dive_frame[0] += 1     # 다음 프레임으로
+            if self.dive_frame[0] > 2:
+                self.dive_frame[0] -= 1
+                self.pos[0] -= 20
 
     def spike_motion(self):
-        Sprite.sprite_sheets[0].clip_draw((self.spike_frame[1] + 3) * self.sprite_size,
-                               885 - (266 + self.sprite_size * 2),
-                               self.sprite_size, self.sprite_size,
+        Sprite.sprite_sheets[0].clip_draw((self.spike_frame[1] + 3) * Sprite.sprite_size,
+                               885 - (266 + Sprite.sprite_size * 2),
+                               Sprite.sprite_size, Sprite.sprite_size,
                                self.pos[0], self.pos[1])
         if self.update_frame % 5 == 0:
             if self.spike_frame[0]:
@@ -108,7 +111,7 @@ class player:
             if self.pos[1] <= 90:
                 self.motion = 'idle'
         if self.motion == 'dive':
-            if self.dive_frame[1] >= 3:
+            if self.dive_frame[1] >= 5:
                 self.motion = 'idle'
                 self.dive_frame[0] = 0
                 self.dive_frame[1] = 0
