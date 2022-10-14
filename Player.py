@@ -10,7 +10,7 @@ class player:
         self.idle_frame = [True, 0]  # True 면 프레임 +, False 면 프레임 -
         self.jump_frame = [True, 1] # Flag, frame
         self.sprite_size = 66
-        self.dir = [0, 0]            # [+면 우측이동 -면 좌측이동, 점프 스피드]
+        self.dir = [0, 0, False]            # [+면 우측이동 -면 좌측이동, 점프 스피드, True면 눌린상태]
         self.spike_frame = [True, 0]
         self.motion_flag = False
 
@@ -29,6 +29,8 @@ class player:
 
     def move(self):
         self.pos[0] += self.dir[0] * 5      # 좌우이동
+        if self.pos[1] == 90 and self.dir[2]:   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면
+            self.dir[1] = Jump_Speed
         self.pos[1] += self.dir[1]          # 점프
         if self.pos[1] > 90:
             self.dir[1] -= 1
@@ -133,7 +135,8 @@ def handle_events():
                     P1.dir[0] -= 1
                 elif event.key == SDLK_r:
                     if P1.pos[1] == 90:
-                        P1.dir[1] = Jump_Speed
+                        P1.dir[2] = True
+                        # P1.dir[1] = Jump_Speed
                 elif event.key == SDLK_z:
                     P1.motion_flag = True
                 elif event.key == SDLK_ESCAPE:
@@ -143,6 +146,8 @@ def handle_events():
                     P1.dir[0] -= 1
                 elif event.key == SDLK_d:
                     P1.dir[0] += 1
+                elif event.key == SDLK_r:
+                    P1.dir[2] = False
     pass
 
 def update():
