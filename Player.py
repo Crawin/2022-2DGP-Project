@@ -12,20 +12,26 @@ class player:
         self.sprite_size = 66
         self.dir = [0, 0, False]            # [+면 우측이동 -면 좌측이동, 점프 스피드, True면 눌린상태]
         self.spike_frame = [True, 0]
-        self.motion_flag = False
+        self.motion = 'idle'
+        self.motion_type = {'idle': self.idle_motion, 'dive': self.dive_motion, 'jump': self.jump_motion, 'spike': self.spike_motion}
 
     def draw(self):
+        self.motion_type[self.motion]()
         if self.pos[1] == 90:
-            if self.motion_flag:
-                # self.dive_motion()
-                self.idle_motion()
-            else:
-                self.idle_motion()
-        else:
-            if self.motion_flag:
-                self.spike_motion()
-            else:
-                self.jump_motion()
+            self.motion = 'idle'
+        if self.dir[2]:
+            self.motion = 'jump'
+        # if self.pos[1] == 90:
+        #     if self.motion_flag:
+        #         # self.dive_motion()
+        #         self.idle_motion()
+        #     else:
+        #         self.idle_motion()
+        # else:
+        #     if self.motion_flag:
+        #         self.spike_motion()
+        #     else:
+        #         self.jump_motion()
 
     def move(self):
         self.pos[0] += self.dir[0] * 5      # 좌우이동
@@ -100,9 +106,9 @@ class player:
                 self.spike_frame[1] -= 1
                 if self.spike_frame[1] == 0:
                     self.spike_frame[0] = True
-                    self.motion_flag = False
+                    self.motion = 'jump'
         if self.pos[1] <= 110:
-            self.motion_flag = False
+            self.motion = 'jump'
 
     def update(self):
         self.move()
@@ -136,9 +142,18 @@ def handle_events():
                 elif event.key == SDLK_r:
                     if P1.pos[1] == 90:
                         P1.dir[2] = True
+                        P1.motion = 'jump'
                         # P1.dir[1] = Jump_Speed
                 elif event.key == SDLK_z:
-                    P1.motion_flag = True
+                    if P1.motion == 'idle':
+                        P1.motion = 'dive'
+                    elif P1.motion == 'jump':
+                        P1.motion = 'spike'
+                    # if P1.pos[1] == 90:
+                    #     P1.motion = 'dive'
+                    # else:
+                    #     P1.motion = 'spike'
+                    # P1.motion_flag = True
                 elif event.key == SDLK_ESCAPE:
                     running = False
         elif event.type == SDL_KEYUP:
@@ -148,6 +163,7 @@ def handle_events():
                     P1.dir[0] += 1
                 elif event.key == SDLK_r:
                     P1.dir[2] = False
+
     pass
 
 def update():
