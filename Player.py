@@ -2,10 +2,10 @@ from pico2d import *
 import Sprite
 
 Jump_Speed = 20
-
+floor = 113 - 8
 class player:
     def __init__(self):
-        self.pos = [90, 90]                 # x, y 위치
+        self.pos = [90, floor]                 # x, y 위치
         self.update_frame = 0               # 입력 딜레이가 0.01이여야 조작감이 좋아서 애니메이션은 딜레이가 0.1이 되도록 하는 변수
         self.idle_frame = [True, 0]         # True 면 프레임 +, False 면 프레임 -
         self.jump_frame = [True, 1]         # Flag, frame
@@ -21,14 +21,14 @@ class player:
 
     def move(self):
         self.pos[0] += self.dir[0] * 5      # 좌우이동
-        if self.pos[1] == 90 and self.dir[2]:   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면
+        if self.pos[1] == floor and self.dir[2]:   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면
             self.dir[1] = Jump_Speed
         self.pos[1] += self.dir[1]          # 점프
-        if self.pos[1] > 90:
+        if self.pos[1] > floor:
             self.dir[1] -= 1
         else:
             self.dir[1] = 0
-            self.pos[1] = 90
+            self.pos[1] = floor
 
     def idle_motion(self):
         Sprite.sprite_sheets[0].clip_draw(self.idle_frame[1] * Sprite.sprite_size,
@@ -105,7 +105,7 @@ class player:
 
     def update_motion(self):
         if self.motion == 'jump':
-            if self.pos[1] <= 90:
+            if self.pos[1] <= floor:
                 self.motion = 'idle'
         if self.dir[2] and self.motion != 'dive' and self.motion != 'spike':
             self.motion = 'jump'
@@ -123,7 +123,7 @@ class player:
         self.update_frame += 1
 
 P1 = None
-
+P2 = None
 def enter():
     global P1
     P1 = player()
@@ -142,7 +142,7 @@ def handle_events():
             elif event.key == SDLK_d:
                 P1.dir[0] -= 1
             elif event.key == SDLK_r:
-                if P1.pos[1] == 90:
+                if P1.pos[1] == floor:
                     if P1.motion != 'dive':
                         P1.motion = 'jump'
                     P1.dir[2] = True
@@ -160,9 +160,9 @@ def handle_events():
                 P1.dir[2] = False
 
 def update():
-    clear_canvas()
+    # clear_canvas()
     P1.update()
-    update_canvas()
+    # update_canvas()
 
 # def handle_events():
 #     global running
