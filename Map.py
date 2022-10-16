@@ -10,8 +10,16 @@ from random import randint
 
 class cloud:
     def __init__(self):
-        pos = [0,randint(448 / 2, 448 - 32)]
-        speed = randint(1,10)
+        self.pos = [randint(0, 448), randint(448 / 2, 448 - 32)]
+        self.speed = randint(1, 2)
+    def move(self):
+        self.pos[0] = self.pos[0] + self.speed
+        if self.pos[0] - (45 / 2) >= 448:       # 구름이 맵 밖으로 나가면
+            self.reset()
+
+    def reset(self):
+        self.pos = [0, randint(448 / 2, 448 - 32)]
+        self.speed = randint(1, 2)
 
 clouds = None
 def enter():
@@ -48,4 +56,6 @@ def draw():
         Sprite.sprite_sheets[0].clip_draw(13, 885 - 10, 6, 8, 230, 70 + 16 * i, 12, 16)  # 네트 기둥
     Sprite.sprite_sheets[0].clip_draw(22, 885 - 10, 8, 8, 230, 70 + 16 * 8, 16, 16)  # 네트 봉
 
-    Sprite.sprite_sheets[0].clip_draw(101,885 - (109+1), 45, 20, 448/2, 448/2)
+    for cloud in clouds:
+        Sprite.sprite_sheets[0].clip_draw(101, 885 - (109+1), 45, 20, cloud.pos[0], cloud.pos[1])
+        cloud.move()
