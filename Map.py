@@ -1,10 +1,28 @@
 from pico2d import *
 import Sprite
+from random import randint
 # 2, 263 , 434,199
 # 맵 크기 = 448 x 448
 # 맵 타일 크기 16 x 16
 # 산 크기
 # 네트 크기 6 x 8
+# 구름 크기 45 x 20
+
+class cloud:
+    def __init__(self):
+        pos = [0,randint(448 / 2, 448 - 32)]
+        speed = randint(1,10)
+
+clouds = None
+def enter():
+    global clouds
+    clouds = [cloud() for i in range(0, 10)]
+
+def exit():
+    global clouds
+    for cloud in clouds:
+        del cloud
+    del clouds
 
 def draw():
     clear_canvas()
@@ -28,5 +46,6 @@ def draw():
 
     for i in range(0, 8):
         Sprite.sprite_sheets[0].clip_draw(13, 885 - 10, 6, 8, 230, 70 + 16 * i, 12, 16)  # 네트 기둥
-    Sprite.sprite_sheets[0].clip_draw(22, 885 - 10, 8, 8, 230, 70 + 16 * 8, 16, 16)  # 네트 기둥
+    Sprite.sprite_sheets[0].clip_draw(22, 885 - 10, 8, 8, 230, 70 + 16 * 8, 16, 16)  # 네트 봉
 
+    Sprite.sprite_sheets[0].clip_draw(101,885 - (109+1), 45, 20, 448/2, 448/2)
