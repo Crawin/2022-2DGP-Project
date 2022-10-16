@@ -7,6 +7,7 @@ import Map
 open_canvas(448, 448)
 Sprite.load_sprites()
 running = True
+Map.enter()
 Player.enter()
 Ball.enter()
 while running:
@@ -17,5 +18,6 @@ while running:
     delay(0.01)
 Ball.exit()
 Player.exit()
+Map.exit()
 close_canvas()
 # -----------------------------------
