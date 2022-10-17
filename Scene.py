@@ -3,9 +3,10 @@ import Player
 import Map
 import Player
 import Ball
+import Sprite
 
 
-def handle_events(type):
+def handle_events(type):            # 키보드 입력
     match type:
         case 'play':
             events = get_events()
@@ -26,6 +27,8 @@ def handle_events(type):
                                 Player.P1.motion = 'dive'
                             elif Player.P1.motion == 'jump':
                                 Player.P1.motion = 'spike'
+                        case pico2d.SDLK_ESCAPE:
+                            pass
                 elif event.type == SDL_KEYUP:
                     match event.key:
                         case pico2d.SDLK_g:
@@ -41,7 +44,9 @@ def handle_events(type):
 def draw(type):
     match type:
         case 'play':
-            pass
+            Map.draw()
+            Player.update()
+            Ball.update()
         case 'main':
             pass
 
