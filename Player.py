@@ -21,6 +21,11 @@ class player:
 
     def move(self):
         self.pos[0] += self.dir[0] * 5      # 좌우이동
+        if self.pos[0] - (Sprite.sprite_size / 2) < 0:          # 좌측 벽 충동
+            self.pos[0] = (Sprite.sprite_size / 2)
+        if self.pos[0] + (Sprite.sprite_size /2) > 230 - 12:    # 우측 기둥 충돌
+            self.pos[0] = 230 - 12 - (Sprite.sprite_size /2)
+
         if self.pos[1] == floor and self.dir[2]:   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면
             self.dir[1] = Jump_Speed
         self.pos[1] += self.dir[1]          # 점프
@@ -82,6 +87,10 @@ class player:
                                self.pos[0], self.pos[1])
         if self.update_frame % 10 == 0:
             self.pos[0] += 25
+            if self.pos[0] - (Sprite.sprite_size / 2) < 0:
+                self.pos[0] = (Sprite.sprite_size / 2)
+            if self.pos[0] + (Sprite.sprite_size / 2) > 230 - 12:
+                self.pos[0] = 230 - 12 - (Sprite.sprite_size / 2)
             self.dive_frame[1] += 1     # 타이머 증가
             self.dive_frame[0] += 1     # 다음 프레임으로
             if self.dive_frame[0] > 2:
