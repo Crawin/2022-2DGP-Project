@@ -16,6 +16,7 @@ while running:
     Player.update()
     Ball.update()
     delay(0.01)
+
 Ball.exit()
 Player.exit()
 Map.exit()
