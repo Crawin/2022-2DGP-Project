@@ -1,7 +1,9 @@
 from pico2d import *
 import Sprite
+import math
 # 885
 # 87 157
+floor = 113 - Sprite.sprite_size
 class C_ball:
     def __init__(self):
         self.pos = [90, 300]
@@ -21,6 +23,12 @@ class C_ball:
     def move(self):
         self.pos[0] += self.dir[0] * self.speed
         self.pos[1] += self.dir[1] * self.speed
+        if self.dir[1] > -1:
+            self.dir[1] -= 0.01
+
+    def collision(self):
+        if self.pos[1] - Sprite.ball_size <= floor:
+            self.dir[1] = -self.dir[1]
 
 ball = None
 
@@ -33,6 +41,7 @@ def exit():
     del ball
 
 def update():
+    ball.collision()
     ball.move()
     ball.draw()
     update_canvas()
