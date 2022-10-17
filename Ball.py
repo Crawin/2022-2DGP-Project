@@ -23,12 +23,14 @@ class C_ball:
     def move(self):
         self.pos[0] += self.dir[0] * self.speed
         self.pos[1] += self.dir[1] * self.speed
-        if self.dir[1] > -1:
-            self.dir[1] -= 0.01
 
     def collision(self):
-        if self.pos[1] - Sprite.ball_size <= floor:
+        if self.pos[1] - Sprite.ball_size < floor:
             self.dir[1] = -self.dir[1]
+        if self.dir[1] < 0:
+            self.speed += 0.1
+        else:
+            self.speed -= 0.1
 
 ball = None
 
