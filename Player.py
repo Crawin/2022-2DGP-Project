@@ -12,8 +12,9 @@ class player:
         self.dir = [0, 0, False]            # [+면 우측이동 -면 좌측이동, 점프 스피드, True면 눌린상태]
         self.spike_frame = [True, 0]        # Flag, frame
         self.dive_frame = [0, 0]            # frame, Timer
+        self.Ldive_frame = [2, 0]            # frame, Timer
         self.motion = 'idle'
-        self.motion_type = {'idle': self.idle_motion, 'dive': self.dive_motion,
+        self.motion_type = {'idle': self.idle_motion, 'dive': self.dive_motion, 'Ldive': self.Ldive_motion,
                             'jump': self.jump_motion, 'spike': self.spike_motion}
 
     def draw(self):
@@ -96,6 +97,22 @@ class player:
             if self.dive_frame[0] > 2:
                 self.dive_frame[0] -= 1
 
+    def Ldive_motion(self):
+        Sprite.sprite_sheets[1].clip_draw(476 - (self.Ldive_frame[0] + 2) * Sprite.sprite_size,
+                               885 - (266 + Sprite.sprite_size * 3),
+                               Sprite.sprite_size, Sprite.sprite_size,
+                               self.pos[0], self.pos[1])
+        if self.update_frame % 10 == 0:
+            self.pos[0] -= 25
+            if self.pos[0] - (Sprite.sprite_size / 2) < 0:
+                self.pos[0] = (Sprite.sprite_size / 2)
+            if self.pos[0] + (Sprite.sprite_size / 2) > 230 - 12:
+                self.pos[0] = 230 - 12 - (Sprite.sprite_size / 2)
+            self.Ldive_frame[1] += 1     # 타이머 증가
+            self.Ldive_frame[0] += 1     # 다음 프레임으로
+            if self.Ldive_frame[0] > 2:
+                self.Ldive_frame[0] -= 1
+
     def spike_motion(self):
         Sprite.sprite_sheets[0].clip_draw((self.spike_frame[1] + 3) * Sprite.sprite_size,
                                885 - (266 + Sprite.sprite_size * 2),
@@ -116,16 +133,21 @@ class player:
         if self.motion == 'jump':
             if self.pos[1] <= floor:
                 self.motion = 'idle'
-        if self.dir[2] and self.motion != 'dive' and self.motion != 'spike':
+        if self.dir[2] and self.motion != 'dive' and self.motion != 'Ldive' and self.motion != 'spike':
             self.motion = 'jump'
         if self.motion == 'dive':
             if self.dive_frame[1] >= 5:
                 self.motion = 'idle'
                 self.dive_frame[0] = 0
                 self.dive_frame[1] = 0
+        if self.motion == 'Ldive':
+            if self.Ldive_frame[1] >= 5:
+                self.motion = 'idle'
+                self.Ldive_frame[0] = 0
+                self.Ldive_frame[1] = 0
 
     def update(self):
-        if self.motion != 'dive':
+        if self.motion != 'dive' and self.motion != 'Ldive':
             self.move()
         self.draw()
         self.update_motion()
@@ -157,7 +179,10 @@ def handle_events():
                     P1.dir[2] = True
             elif event.key == SDLK_z:           # 모션키
                 if P1.motion == 'idle':
-                    P1.motion = 'dive'
+                    if P1.dir[0] == -1:
+                        P1.motion = 'Ldive'
+                    else:
+                        P1.motion = 'dive'
                 elif P1.motion == 'jump':
                     P1.motion = 'spike'
         elif event.type == SDL_KEYUP:

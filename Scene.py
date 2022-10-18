@@ -19,12 +19,15 @@ def handle_events(type):            # 키보드 입력
                             Player.P1.dir[0] -= 1
                         case pico2d.SDLK_r:
                             if Player.P1.pos[1] == Player.floor:
-                                if Player.P1.motion != 'dive':
+                                if Player.P1.motion != 'dive' and Player.P1.motion != 'Ldive':
                                     Player.P1.motion = 'jump'
                             Player.P1.dir[2] = True
                         case pico2d.SDLK_z:
                             if Player.P1.motion == 'idle':
-                                Player.P1.motion = 'dive'
+                                if Player.P1.dir[0] == -1:
+                                    Player.P1.motion = 'Ldive'
+                                else:
+                                    Player.P1.motion = 'dive'
                             elif Player.P1.motion == 'jump':
                                 Player.P1.motion = 'spike'
                         case pico2d.SDLK_ESCAPE:
