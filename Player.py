@@ -163,35 +163,35 @@ def exit():
     global P1
     del P1
 
-def handle_events():
-    global P1
-    events = get_events()
-    for event in events:
-        if event.type == SDL_KEYDOWN:
-            if event.key == SDLK_g:
-                P1.dir[0] += 1
-            elif event.key == SDLK_d:
-                P1.dir[0] -= 1
-            elif event.key == SDLK_r:
-                if P1.pos[1] == floor:
-                    if P1.motion != 'dive':
-                        P1.motion = 'jump'
-                    P1.dir[2] = True
-            elif event.key == SDLK_z:           # 모션키
-                if P1.motion == 'idle':
-                    if P1.dir[0] == -1:
-                        P1.motion = 'Ldive'
-                    else:
-                        P1.motion = 'dive'
-                elif P1.motion == 'jump':
-                    P1.motion = 'spike'
-        elif event.type == SDL_KEYUP:
-            if event.key == SDLK_g:
-                P1.dir[0] -= 1
-            elif event.key == SDLK_d:
-                P1.dir[0] += 1
-            elif event.key == SDLK_r:
-                P1.dir[2] = False
+# def handle_events():
+#     global P1
+#     events = get_events()
+#     for event in events:
+#         if event.type == SDL_KEYDOWN:
+#             if event.key == SDLK_g:
+#                 P1.dir[0] += 1
+#             elif event.key == SDLK_d:
+#                 P1.dir[0] -= 1
+#             elif event.key == SDLK_r:
+#                 if P1.pos[1] == floor:
+#                     if P1.motion != 'dive':
+#                         P1.motion = 'jump'
+#                     P1.dir[2] = True
+#             elif event.key == SDLK_z:           # 모션키
+#                 if P1.motion == 'idle':
+#                     if P1.dir[0] == -1:
+#                         P1.motion = 'Ldive'
+#                     else:
+#                         P1.motion = 'dive'
+#                 elif P1.motion == 'jump':
+#                     P1.motion = 'spike'
+#         elif event.type == SDL_KEYUP:
+#             if event.key == SDLK_g:
+#                 P1.dir[0] -= 1
+#             elif event.key == SDLK_d:
+#                 P1.dir[0] += 1
+#             elif event.key == SDLK_r:
+#                 P1.dir[2] = False
 
 def update():
     # clear_canvas()
