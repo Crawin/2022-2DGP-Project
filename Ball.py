@@ -42,8 +42,9 @@ class C_ball:
             self.dir[0] = -self.dir[0]
 
         if self.aabb():
-            print('충돌')
-
+            self.dir = [(self.pos[0] - Player.P1.pos[0]) / math.sqrt((self.pos[0] - Player.P1.pos[0])*(self.pos[0] - Player.P1.pos[0]) + (self.pos[1] - Player.P1.pos[1]) * self.pos[1] - Player.P1.pos[1])
+                , (self.pos[1] - Player.P1.pos[1])/ math.sqrt((self.pos[0] - Player.P1.pos[0])*(self.pos[0] - Player.P1.pos[0]) + (self.pos[1] - Player.P1.pos[1]) * self.pos[1] - Player.P1.pos[1])]
+            
 ball = None
 
 def enter():
