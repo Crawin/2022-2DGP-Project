@@ -10,7 +10,7 @@ class C_ball:
     def __init__(self):
         self.pos = [90, 300]
         self.frame = [0, 0]         # 매 프레임마다 1씩 증가, 10프레임마다 1씩 증가
-        self.dir = [1, 0]
+        self.dir = [0, -1]
         self.vel = 1
 
     def draw(self):
@@ -27,12 +27,23 @@ class C_ball:
         self.pos[0] += self.dir[0] * self.vel
         self.pos[1] += self.dir[1] * self.vel
 
+    def aabb(self):
+        if (self.pos[0] - Sprite.ball_size / 2 > Player.P1.pos[0] + Sprite.sprite_size / 2) or (self.pos[0] + Sprite.ball_size / 2 < Player.P1.pos[0] - Sprite.sprite_size / 2) :
+            return False
+        if (self.pos[1] - Sprite.ball_size / 2 > Player.P1.pos[1] + Sprite.sprite_size / 2) or (self.pos[1] + Sprite.ball_size / 2 < Player.P1.pos[1] - Sprite.sprite_size / 2) :
+            return False
+        return True
+
     def collision(self):
         if self.pos[1] - Sprite.ball_size < floor:
             self.dir[1] = -self.dir[1]
 
         if self.pos[0] - Sprite.ball_size / 2 < 0 or self.pos[0] + Sprite.ball_size / 2 > 448:
             self.dir[0] = -self.dir[0]
+
+        if self.aabb():
+            print('충돌')
+
 ball = None
 
 def enter():
@@ -48,3 +59,4 @@ def update():
     ball.move()
     ball.draw()
     update_canvas()
+
