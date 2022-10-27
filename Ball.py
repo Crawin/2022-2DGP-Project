@@ -10,7 +10,8 @@ class C_ball:
     def __init__(self):
         self.pos = [90, 300]
         self.frame = [0, 0]         # 매 프레임마다 1씩 증가, 10프레임마다 1씩 증가
-        self.dir = [0, -1]
+        self.dir = [0, -1]          # 방향벡터
+        self.colldir = [0, 1]       # 충돌시 방향벡터
         self.vel = 1
 
     def draw(self):
@@ -42,9 +43,9 @@ class C_ball:
             self.dir[0] = -self.dir[0]
 
         if self.aabb():
-            self.dir = [(self.pos[0] - Player.P1.pos[0]) / math.sqrt((self.pos[0] - Player.P1.pos[0])*(self.pos[0] - Player.P1.pos[0]) + (self.pos[1] - Player.P1.pos[1]) * self.pos[1] - Player.P1.pos[1])
-                , (self.pos[1] - Player.P1.pos[1])/ math.sqrt((self.pos[0] - Player.P1.pos[0])*(self.pos[0] - Player.P1.pos[0]) + (self.pos[1] - Player.P1.pos[1]) * self.pos[1] - Player.P1.pos[1])]
-            
+            if self.dir[1] / math.fabs(self.dir[1]) != self.colldir[1] / math.fabs(self.colldir[1]):
+                self.dir = [-self.dir[0], -self.dir[1]]
+
 ball = None
 
 def enter():
