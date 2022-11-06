@@ -8,14 +8,13 @@ class player:
     def __init__(self):
         self.pos = [90, floor]                 # x, y 위치
         self.update_frame = 0               # 입력 딜레이가 0.01이여야 조작감이 좋아서 애니메이션은 딜레이가 0.1이 되도록 하는 변수
-        self.idle_frame = [True, 0]         # True 면 프레임 +, False 면 프레임 -
         self.jump_frame = [True, 1]         # Flag, frame
         self.dir = [0, 0, False]            # [+면 우측이동 -면 좌측이동, 점프 스피드, True면 눌린상태]
         self.spike_frame = [True, 0]        # Flag, frame
         self.dive_frame = [0, 0]            # frame, Timer
         self.Ldive_frame = [2, 0]            # frame, Timer
         self.motion = 'idle'
-        self.motion2 = None
+        self.motion2 = Motion.IDLE()
         self.motion_type = {'idle': self.idle_motion, 'dive': self.dive_motion, 'Ldive': self.Ldive_motion,
                             'jump': self.jump_motion, 'spike': self.spike_motion}
 
@@ -39,19 +38,7 @@ class player:
             self.pos[1] = floor
 
     def idle_motion(self):
-        Sprite.sprite_sheets[0].clip_draw(self.idle_frame[1] * Sprite.sprite_size,
-                               885 - (266 + Sprite.sprite_size),
-                               Sprite.sprite_size, Sprite.sprite_size,
-                               self.pos[0], self.pos[1])
-        if self.update_frame % 10 == 0:
-            if self.idle_frame[0]:
-                self.idle_frame[1] += 1
-                if self.idle_frame[1] == 4:
-                    self.idle_frame[0] = False
-            else:
-                self.idle_frame[1] -= 1
-                if self.idle_frame[1] == 0:
-                    self.idle_frame[0] = True
+        self.motion2.casting(self.pos, self.update_frame)
 
     def jump_motion(self):
         # if self.jump_frame[1] == 0:
@@ -82,10 +69,6 @@ class player:
         #         elif self.jump_frame[1] == 1:
         #             self.jump_frame[1] = 2
         #             self.jump_frame[0] = True
-        if self.motion2.JUMP.getStarttime() != 0 :
-            Motion.JUMP.casting()
-        else:
-            self.motion2 = Motion.JUMP()
 
     def dive_motion(self):
         Sprite.sprite_sheets[0].clip_draw((self.dive_frame[0] + 1) * Sprite.sprite_size,
