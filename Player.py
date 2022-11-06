@@ -1,5 +1,6 @@
 from pico2d import *
 import Sprite
+import Motion
 
 Jump_Speed = 20
 floor = 113 - 8
@@ -14,6 +15,7 @@ class player:
         self.dive_frame = [0, 0]            # frame, Timer
         self.Ldive_frame = [2, 0]            # frame, Timer
         self.motion = 'idle'
+        self.motion2 = None
         self.motion_type = {'idle': self.idle_motion, 'dive': self.dive_motion, 'Ldive': self.Ldive_motion,
                             'jump': self.jump_motion, 'spike': self.spike_motion}
 
@@ -52,34 +54,38 @@ class player:
                     self.idle_frame[0] = True
 
     def jump_motion(self):
-        if self.jump_frame[1] == 0:
-            Sprite.sprite_sheets[0].clip_draw(self.jump_frame[1] * Sprite.sprite_size,
-                                   885 - (266 + Sprite.sprite_size * 2),
-                                   Sprite.sprite_size, Sprite.sprite_size,
-                                   self.pos[0], self.pos[1])
+        # if self.jump_frame[1] == 0:
+        #     Sprite.sprite_sheets[0].clip_draw(self.jump_frame[1] * Sprite.sprite_size,
+        #                            885 - (266 + Sprite.sprite_size * 2),
+        #                            Sprite.sprite_size, Sprite.sprite_size,
+        #                            self.pos[0], self.pos[1])
+        # else:
+        #     Sprite.sprite_sheets[0].clip_draw((self.jump_frame[1] + 4) * Sprite.sprite_size,
+        #                            885 - (266 + Sprite.sprite_size),
+        #                            Sprite.sprite_size, Sprite.sprite_size,
+        #                            self.pos[0], self.pos[1])
+        #
+        # if self.update_frame % 5 == 0:
+        #     if self.jump_frame[0]:
+        #         if self.jump_frame[1] == 1:
+        #             self.jump_frame[1] = 2
+        #         elif self.jump_frame[1] == 2:
+        #             self.jump_frame[1] = 0
+        #         elif self.jump_frame[1] == 0:
+        #             self.jump_frame[1] = 2
+        #             self.jump_frame[0] = False
+        #     else:
+        #         if self.jump_frame[1] == 0:
+        #             self.jump_frame[1] = 2
+        #         elif self.jump_frame[1] == 2:
+        #             self.jump_frame[1] = 1
+        #         elif self.jump_frame[1] == 1:
+        #             self.jump_frame[1] = 2
+        #             self.jump_frame[0] = True
+        if self.motion2.JUMP.getStarttime() != 0 :
+            Motion.JUMP.casting()
         else:
-            Sprite.sprite_sheets[0].clip_draw((self.jump_frame[1] + 4) * Sprite.sprite_size,
-                                   885 - (266 + Sprite.sprite_size),
-                                   Sprite.sprite_size, Sprite.sprite_size,
-                                   self.pos[0], self.pos[1])
-
-        if self.update_frame % 5 == 0:
-            if self.jump_frame[0]:
-                if self.jump_frame[1] == 1:
-                    self.jump_frame[1] = 2
-                elif self.jump_frame[1] == 2:
-                    self.jump_frame[1] = 0
-                elif self.jump_frame[1] == 0:
-                    self.jump_frame[1] = 2
-                    self.jump_frame[0] = False
-            else:
-                if self.jump_frame[1] == 0:
-                    self.jump_frame[1] = 2
-                elif self.jump_frame[1] == 2:
-                    self.jump_frame[1] = 1
-                elif self.jump_frame[1] == 1:
-                    self.jump_frame[1] = 2
-                    self.jump_frame[0] = True
+            self.motion2 = Motion.JUMP()
 
     def dive_motion(self):
         Sprite.sprite_sheets[0].clip_draw((self.dive_frame[0] + 1) * Sprite.sprite_size,
@@ -157,6 +163,7 @@ P1 = None
 P2 = None
 def enter():
     global P1
+    print("P1enter")
     P1 = player()
 
 def exit():

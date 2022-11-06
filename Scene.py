@@ -5,7 +5,6 @@ import Player
 import Ball
 import Sprite
 
-
 def handle_events(type):            # 키보드 입력
     match type:
         case 'play':
