@@ -13,14 +13,13 @@ class player:
         self.spike_frame = [True, 0]        # Flag, frame
         self.dive_frame = [0, 0]            # frame, Timer
         self.Ldive_frame = [2, 0]            # frame, Timer
-        self.motion = 'idle'
-        self.motion2 = Motion.IDLE()
+        self.motion = 'Idle'
         self.motion_type = {'idle': self.idle_motion, 'dive': self.dive_motion, 'Ldive': self.Ldive_motion,
                             'jump': self.jump_motion, 'spike': self.spike_motion}
 
     def draw(self):
         # self.motion_type[self.motion]()
-        self.motion2.casting(self.pos, self.update_frame)
+        self.motion.casting(self.pos, self.update_frame)
 
     def move(self):
         self.pos[0] += self.dir[0] * 5      # 좌우이동
@@ -42,34 +41,6 @@ class player:
         self.motion2.casting(self.pos, self.update_frame)
 
     def jump_motion(self):
-        # if self.jump_frame[1] == 0:
-        #     Sprite.sprite_sheets[0].clip_draw(self.jump_frame[1] * Sprite.sprite_size,
-        #                            885 - (266 + Sprite.sprite_size * 2),
-        #                            Sprite.sprite_size, Sprite.sprite_size,
-        #                            self.pos[0], self.pos[1])
-        # else:
-        #     Sprite.sprite_sheets[0].clip_draw((self.jump_frame[1] + 4) * Sprite.sprite_size,
-        #                            885 - (266 + Sprite.sprite_size),
-        #                            Sprite.sprite_size, Sprite.sprite_size,
-        #                            self.pos[0], self.pos[1])
-        #
-        # if self.update_frame % 5 == 0:
-        #     if self.jump_frame[0]:
-        #         if self.jump_frame[1] == 1:
-        #             self.jump_frame[1] = 2
-        #         elif self.jump_frame[1] == 2:
-        #             self.jump_frame[1] = 0
-        #         elif self.jump_frame[1] == 0:
-        #             self.jump_frame[1] = 2
-        #             self.jump_frame[0] = False
-        #     else:
-        #         if self.jump_frame[1] == 0:
-        #             self.jump_frame[1] = 2
-        #         elif self.jump_frame[1] == 2:
-        #             self.jump_frame[1] = 1
-        #         elif self.jump_frame[1] == 1:
-        #             self.jump_frame[1] = 2
-        #             self.jump_frame[0] = True
         pass
 
     def dive_motion(self):
@@ -149,82 +120,12 @@ P2 = None
 def enter():
     global P1
     print("P1enter")
+    Motion.load_motions()
     P1 = player()
 
 def exit():
     global P1
     del P1
 
-# def handle_events():
-#     global P1
-#     events = get_events()
-#     for event in events:
-#         if event.type == SDL_KEYDOWN:
-#             if event.key == SDLK_g:
-#                 P1.dir[0] += 1
-#             elif event.key == SDLK_d:
-#                 P1.dir[0] -= 1
-#             elif event.key == SDLK_r:
-#                 if P1.pos[1] == floor:
-#                     if P1.motion != 'dive':
-#                         P1.motion = 'jump'
-#                     P1.dir[2] = True
-#             elif event.key == SDLK_z:           # 모션키
-#                 if P1.motion == 'idle':
-#                     if P1.dir[0] == -1:
-#                         P1.motion = 'Ldive'
-#                     else:
-#                         P1.motion = 'dive'
-#                 elif P1.motion == 'jump':
-#                     P1.motion = 'spike'
-#         elif event.type == SDL_KEYUP:
-#             if event.key == SDLK_g:
-#                 P1.dir[0] -= 1
-#             elif event.key == SDLK_d:
-#                 P1.dir[0] += 1
-#             elif event.key == SDLK_r:
-#                 P1.dir[2] = False
-
 def update():
-    # clear_canvas()
     P1.update()
-    # update_canvas()
-
-# def handle_events():
-#     global running
-#     global P1
-#     events = get_events()
-#     for event in events:
-#         if event.type == SDL_QUIT:
-#             running = False
-#         elif event.type == SDL_KEYDOWN:
-#                 if event.key == SDLK_g:
-#                     P1.dir[0] += 1
-#                 elif event.key == SDLK_d:
-#                     P1.dir[0] -= 1
-#                 elif event.key == SDLK_r:
-#                     if P1.pos[1] == 90:
-#                         P1.dir[2] = True
-#                         P1.motion = 'jump'
-#                         # P1.dir[1] = Jump_Speed
-#                 elif event.key == SDLK_z:
-#                     if P1.motion == 'idle':
-#                         P1.motion = 'dive'
-#                     elif P1.motion == 'jump':
-#                         P1.motion = 'spike'
-#                     # if P1.pos[1] == 90:
-#                     #     P1.motion = 'dive'
-#                     # else:
-#                     #     P1.motion = 'spike'
-#                     # P1.motion_flag = True
-#                 elif event.key == SDLK_ESCAPE:
-#                     running = False
-#         elif event.type == SDL_KEYUP:
-#                 if event.key == SDLK_g:
-#                     P1.dir[0] -= 1
-#                 elif event.key == SDLK_d:
-#                     P1.dir[0] += 1
-#                 elif event.key == SDLK_r:
-#                     P1.dir[2] = False
-#     pass
-

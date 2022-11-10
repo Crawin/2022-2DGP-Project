@@ -8,7 +8,10 @@ class JUMP:
         self.casting_time = 3
         self.cool_time = 0
 
+    def enter(self):
+        print("JUMP ENTER")
         self.frame = [True, 1]
+
 
     def exit(self):
         print("JUMP EXIT")
@@ -59,8 +62,15 @@ class IDLE:
         self.start_time = time.time()
         self.casting_time = 0
         self.cool_time = 0
+        self.doing = False
 
-        self.frame = [True, 0]
+    def enter(self):
+        if self.doing:
+            self.casting()
+        else:
+            print("IDLE ENTER")
+            self.frame = [True, 0]
+            self.doing = True
 
     def exit(self):
         print("IDLE EXIT")
@@ -80,3 +90,15 @@ class IDLE:
                 self.frame[1] -= 1
                 if self.frame[1] == 0:
                     self.frame[0] = True
+
+motions = None
+def load_motions():
+    global motions
+    motions = {'Jump': JUMP(), 'Idle': IDLE(), 'Spike': SPIKE(), 'Dive': DIVE()}
+
+def del_motions():
+    global motions
+    del motions
+
+def draw_motion(motion, pos, updatetime):
+    motions[motion].enter()
