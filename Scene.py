@@ -4,6 +4,7 @@ import Map
 import Player
 import Ball
 import Sprite
+import Motion
 
 def handle_events(type):            # 키보드 입력
     match type:
@@ -20,6 +21,9 @@ def handle_events(type):            # 키보드 입력
                             if Player.P1.pos[1] == Player.floor:
                                 if Player.P1.motion != 'dive' and Player.P1.motion != 'Ldive':
                                     Player.P1.motion = 'jump'
+                                    Player.P1.motion2.exit()
+                                    Player.P1.motion2 = Motion.JUMP()
+
                             Player.P1.dir[2] = True
                         case pico2d.SDLK_z:
                             if Player.P1.motion == 'idle':

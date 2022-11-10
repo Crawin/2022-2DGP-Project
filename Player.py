@@ -19,7 +19,8 @@ class player:
                             'jump': self.jump_motion, 'spike': self.spike_motion}
 
     def draw(self):
-        self.motion_type[self.motion]()
+        # self.motion_type[self.motion]()
+        self.motion2.casting(self.pos, self.update_frame)
 
     def move(self):
         self.pos[0] += self.dir[0] * 5      # 좌우이동
@@ -69,6 +70,7 @@ class player:
         #         elif self.jump_frame[1] == 1:
         #             self.jump_frame[1] = 2
         #             self.jump_frame[0] = True
+        pass
 
     def dive_motion(self):
         Sprite.sprite_sheets[0].clip_draw((self.dive_frame[0] + 1) * Sprite.sprite_size,
