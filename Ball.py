@@ -13,6 +13,7 @@ class C_ball:
         self.dir = [0, -1]          # 방향벡터
         self.colldir = [0, 1]       # 충돌시 방향벡터
         self.vel = 1
+        self.coll = False
 
     def draw(self):
         Sprite.sprite_sheets[0].clip_draw((self.frame[1] * Sprite.ball_size) + 87,
@@ -24,6 +25,8 @@ class C_ball:
             self.frame[1] = (self.frame[1] + 1) % 5
 
     def move(self):
+        if self.dir[1] * (self.dir[1] - 0.1) <0:
+            self.coll = False
         self.dir[1] = self.dir[1] - 0.1
         self.pos[0] += self.dir[0] * self.vel
         self.pos[1] += self.dir[1] * self.vel
@@ -38,16 +41,24 @@ class C_ball:
     def collision(self):
         if self.pos[1] - Sprite.ball_size < floor:
             self.dir[1] = -self.dir[1]
+            self.coll = False
+
+        if self.pos[1] + Sprite.ball_size > 448:
+            self.dir[1] = -self.dir[1]
+            self.coll = False
 
         if self.pos[0] - Sprite.ball_size / 2 < 0 or self.pos[0] + Sprite.ball_size / 2 > 448:
             self.dir[0] = -self.dir[0]
+            self.coll = False
 
         if self.aabb():
-            self.dir = [self.dir[0],-self.dir[1]]
-            self.dir[0] += Player.P1.dir[0]*0.5
-            self.dir[1] += Player.P1.dir[1]*0.5
-            # if self.dir[1] / math.fabs(self.dir[1]) != self.colldir[1] / math.fabs(self.colldir[1]):
-            #     self.dir = [-self.dir[0], -self.dir[1]]
+            if not self.coll:
+                self.coll = True
+                self.dir = [self.dir[0],-self.dir[1]]
+                self.dir[0] += Player.P1.dir[0]*0.5
+                self.dir[1] += Player.P1.dir[1]*0.5
+                # if self.dir[1] / math.fabs(self.dir[1]) != self.colldir[1] / math.fabs(self.colldir[1]):
+                #     self.dir = [-self.dir[0], -self.dir[1]]
 
 ball = None
 
