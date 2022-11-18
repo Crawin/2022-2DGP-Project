@@ -152,6 +152,7 @@ class player:
         self.draw()
         self.update_motion()
         self.update_frame += 1
+        print(self.dir)
 
 P1 = None
 P2 = None
@@ -163,76 +164,5 @@ def exit():
     global P1
     del P1
 
-# def handle_events():
-#     global P1
-#     events = get_events()
-#     for event in events:
-#         if event.type == SDL_KEYDOWN:
-#             if event.key == SDLK_g:
-#                 P1.dir[0] += 1
-#             elif event.key == SDLK_d:
-#                 P1.dir[0] -= 1
-#             elif event.key == SDLK_r:
-#                 if P1.pos[1] == floor:
-#                     if P1.motion != 'dive':
-#                         P1.motion = 'jump'
-#                     P1.dir[2] = True
-#             elif event.key == SDLK_z:           # 모션키
-#                 if P1.motion == 'idle':
-#                     if P1.dir[0] == -1:
-#                         P1.motion = 'Ldive'
-#                     else:
-#                         P1.motion = 'dive'
-#                 elif P1.motion == 'jump':
-#                     P1.motion = 'spike'
-#         elif event.type == SDL_KEYUP:
-#             if event.key == SDLK_g:
-#                 P1.dir[0] -= 1
-#             elif event.key == SDLK_d:
-#                 P1.dir[0] += 1
-#             elif event.key == SDLK_r:
-#                 P1.dir[2] = False
-
 def update():
-    # clear_canvas()
     P1.update()
-    # update_canvas()
-
-# def handle_events():
-#     global running
-#     global P1
-#     events = get_events()
-#     for event in events:
-#         if event.type == SDL_QUIT:
-#             running = False
-#         elif event.type == SDL_KEYDOWN:
-#                 if event.key == SDLK_g:
-#                     P1.dir[0] += 1
-#                 elif event.key == SDLK_d:
-#                     P1.dir[0] -= 1
-#                 elif event.key == SDLK_r:
-#                     if P1.pos[1] == 90:
-#                         P1.dir[2] = True
-#                         P1.motion = 'jump'
-#                         # P1.dir[1] = Jump_Speed
-#                 elif event.key == SDLK_z:
-#                     if P1.motion == 'idle':
-#                         P1.motion = 'dive'
-#                     elif P1.motion == 'jump':
-#                         P1.motion = 'spike'
-#                     # if P1.pos[1] == 90:
-#                     #     P1.motion = 'dive'
-#                     # else:
-#                     #     P1.motion = 'spike'
-#                     # P1.motion_flag = True
-#                 elif event.key == SDLK_ESCAPE:
-#                     running = False
-#         elif event.type == SDL_KEYUP:
-#                 if event.key == SDLK_g:
-#                     P1.dir[0] -= 1
-#                 elif event.key == SDLK_d:
-#                     P1.dir[0] += 1
-#                 elif event.key == SDLK_r:
-#                     P1.dir[2] = False
-#     pass
-

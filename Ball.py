@@ -43,8 +43,11 @@ class C_ball:
             self.dir[0] = -self.dir[0]
 
         if self.aabb():
-            if self.dir[1] / math.fabs(self.dir[1]) != self.colldir[1] / math.fabs(self.colldir[1]):
-                self.dir = [-self.dir[0], -self.dir[1]]
+            self.dir = [self.dir[0],-self.dir[1]]
+            self.dir[0] += Player.P1.dir[0]*0.5
+            self.dir[1] += Player.P1.dir[1]*0.5
+            # if self.dir[1] / math.fabs(self.dir[1]) != self.colldir[1] / math.fabs(self.colldir[1]):
+            #     self.dir = [-self.dir[0], -self.dir[1]]
 
 ball = None
 
