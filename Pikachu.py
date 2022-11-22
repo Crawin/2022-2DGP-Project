@@ -11,10 +11,10 @@ Sprite.load_sprites()
 running = True
 Scene.enter('play')
 while running:
-    Scene.handle_events('play')
+    running = Scene.handle_events('play')
     Scene.draw('play')
     delay(0.01)
 
-Scene.exit()
+Scene.exit('play')
 close_canvas()
 # -----------------------------------
