@@ -13,7 +13,7 @@ class C_ball:
         self.dir = [0, -1]          # 방향벡터
         self.colldir = [0, 1]       # 충돌시 방향벡터
         self.vel = 1
-        self.coll = False
+        # self.coll = False
 
     def draw(self):
         Sprite.sprite_sheets[0].clip_draw((self.frame[1] * Sprite.ball_size) + 87,
@@ -24,41 +24,61 @@ class C_ball:
         if self.frame[0] % 5 == 0:
             self.frame[1] = (self.frame[1] + 1) % 5
 
+
     def move(self):
-        if self.dir[1] * (self.dir[1] - 0.1) <0:
-            self.coll = False
+        # if self.dir[1] * (self.dir[1] - 0.1) < 0:
+        #     self.coll = False
         self.dir[1] = self.dir[1] - 0.1
         self.pos[0] += self.dir[0] * self.vel
         self.pos[1] += self.dir[1] * self.vel
+        self.collision()
 
-    def aabb(self):
-        if (self.pos[0] - Sprite.ball_size / 2 > Player.P1.pos[0] + Sprite.sprite_size / 2) or (self.pos[0] + Sprite.ball_size / 2 < Player.P1.pos[0] - Sprite.sprite_size / 2) :
+    def aabb(self,rx,lx,ty,by):
+        draw_rectangle(lx, by, rx, ty)
+        if (self.pos[0] - Sprite.ball_size / 2 > rx) or (self.pos[0] + Sprite.ball_size / 2 < lx):
             return False
-        if (self.pos[1] - Sprite.ball_size / 2 > Player.P1.pos[1] + Sprite.sprite_size / 2) or (self.pos[1] + Sprite.ball_size / 2 < Player.P1.pos[1] - Sprite.sprite_size / 2) :
+        if (self.pos[1] - Sprite.ball_size / 2 > ty) or (self.pos[1] + Sprite.ball_size / 2 < by):
             return False
         return True
 
     def collision(self):
         if self.pos[1] - Sprite.ball_size < floor:
             self.dir[1] = -self.dir[1]
-            self.coll = False
+            self.pos[1] += self.dir[1] * self.vel
+            # self.coll = False
 
         if self.pos[1] + Sprite.ball_size > 448:
             self.dir[1] = -self.dir[1]
-            self.coll = False
+            self.pos[1] += self.dir[1] * self.vel
+            # self.coll = False
 
         if self.pos[0] - Sprite.ball_size / 2 < 0 or self.pos[0] + Sprite.ball_size / 2 > 448:
             self.dir[0] = -self.dir[0]
-            self.coll = False
+            self.pos[0] += self.dir[0] * self.vel
+            # self.coll = False
 
-        if self.aabb():
-            if not self.coll:
-                self.coll = True
-                self.dir = [self.dir[0],-self.dir[1]]
-                self.dir[0] += Player.P1.dir[0]*0.5
-                self.dir[1] += Player.P1.dir[1]*0.5
-                # if self.dir[1] / math.fabs(self.dir[1]) != self.colldir[1] / math.fabs(self.colldir[1]):
-                #     self.dir = [-self.dir[0], -self.dir[1]]
+        if self.aabb(230 + 8,230 - 8,70 + 16 * 8+8,80 - 8):
+            if self.pos[0] >=230 - 8 and self.pos[0] <= 230 + 8:
+                self.dir[1] = -self.dir[1]
+                self.pos[1] += self.dir[1] * self.vel
+            else:
+                self.dir[0] = -self.dir[0]
+                self.pos[0] += self.dir[0] * self.vel
+            # self.coll = False
+
+        if self.aabb(Player.P1.pos[0] + Sprite.sprite_size / 2 - 10,Player.P1.pos[0] - Sprite.sprite_size / 2 + 30,
+                     Player.P1.pos[1] + Sprite.sprite_size / 2 - 10,Player.P1.pos[1] - Sprite.sprite_size / 2 + 50):
+            if self.pos[1] > (Player.P1.pos[1] + Sprite.sprite_size / 2 - 10) and self.dir[1] <= 0:
+                self.dir[1] = -self.dir[1]
+                self.pos[1] += self.dir[1] * self.vel
+            self.dir[0] = min(10, self.dir[0] + Player.P1.dir[0])
+            self.dir[1] = min(10, self.dir[1] + Player.P1.dir[1])
+            # if not self.coll:
+            #     self.coll = True
+            #     if self.pos[1] > (Player.P1.pos[1] + Sprite.sprite_size / 2 - 10) and self.dir[1] <= 0:
+            #         self.dir = [self.dir[0], -self.dir[1]]
+            #     self.dir[0] = min(10, self.dir[0] + Player.P1.dir[0])
+            #     self.dir[1] = min(10, self.dir[1] + Player.P1.dir[1])
 
 ball = None
 
@@ -71,7 +91,6 @@ def exit():
     del ball
 
 def update():
-    ball.collision()
     ball.move()
     ball.draw()
     update_canvas()
