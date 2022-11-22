@@ -1,35 +1,40 @@
 from pico2d import *
 import Sprite
 
-Jump_Speed = 20
 floor = 113 - 8
+Jump_Speed = 20
+Move_Speed = 3
 class player:
     def __init__(self):
-        self.pos = [90, floor]                 # x, y 위치
+        self.pos = [90, floor]              # x, y 위치
+        self.dir = [0, 0, False]            # [+면 우측이동 -면 좌측이동, 점프 스피드, True면 눌린상태]
         self.update_frame = 0               # 입력 딜레이가 0.01이여야 조작감이 좋아서 애니메이션은 딜레이가 0.1이 되도록 하는 변수
+
         self.idle_frame = [True, 0]         # True 면 프레임 +, False 면 프레임 -
         self.jump_frame = [True, 1]         # Flag, frame
-        self.dir = [0, 0, False]            # [+면 우측이동 -면 좌측이동, 점프 스피드, True면 눌린상태]
         self.spike_frame = [True, 0]        # Flag, frame
-        self.dive_frame = [0, 0]            # frame, Timer
-        self.Ldive_frame = [2, 0]            # frame, Timer
+        self.dive_frame = [0, 0, 0]     # head, frame, Timer
+
         self.motion = 'idle'
-        self.motion_type = {'idle': self.idle_motion, 'dive': self.dive_motion, 'Ldive': self.Ldive_motion,
+        self.motion_type = {'idle': self.idle_motion, 'dive': self.dive_motion,
                             'jump': self.jump_motion, 'spike': self.spike_motion}
 
     def draw(self):
         self.motion_type[self.motion]()
 
     def move(self):
-        self.pos[0] += self.dir[0] * 5      # 좌우이동
-        if self.pos[0] - (Sprite.sprite_size / 2) < 0:          # 좌측 벽 충동
-            self.pos[0] = (Sprite.sprite_size / 2)
-        if self.pos[0] + (Sprite.sprite_size /2) > 230 - 12:    # 우측 기둥 충돌
-            self.pos[0] = 230 - 12 - (Sprite.sprite_size /2)
+        global Move_Speed
+        # 다이브 모션 진행중이면 다이빙
+        if self.motion == 'dive':
+            self.pos[0] += self.dive_frame[0] * Move_Speed  # 좌우이동
+            Move_Speed = max(0, Move_Speed - 7 / 50)
+        else:
+            self.pos[0] += self.dir[0] * Move_Speed  # 좌우이동
+        self.pos[0] = clamp((Sprite.sprite_size / 2), self.pos[0], 230 - 12 - (Sprite.sprite_size /2))
 
-        if self.pos[1] == floor and self.dir[2]:   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면
+        if self.pos[1] == floor and self.dir[2] and self.motion == 'idle':   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면서 idle 상태면
             self.dir[1] = Jump_Speed
-        self.pos[1] += self.dir[1]          # 점프
+        self.pos[1] += self.dir[1]         # 점프
         if self.pos[1] > floor:
             self.dir[1] -= 1
         else:
@@ -82,36 +87,22 @@ class player:
                     self.jump_frame[0] = True
 
     def dive_motion(self):
-        Sprite.sprite_sheets[0].clip_draw((self.dive_frame[0] + 1) * Sprite.sprite_size,
-                               885 - (266 + Sprite.sprite_size * 3),
-                               Sprite.sprite_size, Sprite.sprite_size,
-                               self.pos[0], self.pos[1])
-        if self.update_frame % 10 == 0:
-            self.pos[0] += 25
-            if self.pos[0] - (Sprite.sprite_size / 2) < 0:
-                self.pos[0] = (Sprite.sprite_size / 2)
-            if self.pos[0] + (Sprite.sprite_size / 2) > 230 - 12:
-                self.pos[0] = 230 - 12 - (Sprite.sprite_size / 2)
-            self.dive_frame[1] += 1     # 타이머 증가
-            self.dive_frame[0] += 1     # 다음 프레임으로
-            if self.dive_frame[0] > 2:
-                self.dive_frame[0] -= 1
+        if self.dive_frame[0] < 0:
+            Sprite.sprite_sheets[0].clip_composite_draw((self.dive_frame[1] + 1) * Sprite.sprite_size,
+                                   885 - (266 + Sprite.sprite_size * 3),
+                                   Sprite.sprite_size, Sprite.sprite_size,0,'h',
+                                   self.pos[0], self.pos[1],66,66)
+        else:
+            Sprite.sprite_sheets[0].clip_draw((self.dive_frame[1] + 1) * Sprite.sprite_size,
+                                   885 - (266 + Sprite.sprite_size * 3),
+                                   Sprite.sprite_size, Sprite.sprite_size,
+                                   self.pos[0], self.pos[1])
 
-    def Ldive_motion(self):
-        Sprite.sprite_sheets[1].clip_draw(476 - (self.Ldive_frame[0] + 2) * Sprite.sprite_size,
-                               885 - (266 + Sprite.sprite_size * 3),
-                               Sprite.sprite_size, Sprite.sprite_size,
-                               self.pos[0], self.pos[1])
         if self.update_frame % 10 == 0:
-            self.pos[0] -= 25
-            if self.pos[0] - (Sprite.sprite_size / 2) < 0:
-                self.pos[0] = (Sprite.sprite_size / 2)
-            if self.pos[0] + (Sprite.sprite_size / 2) > 230 - 12:
-                self.pos[0] = 230 - 12 - (Sprite.sprite_size / 2)
-            self.Ldive_frame[1] += 1     # 타이머 증가
-            self.Ldive_frame[0] += 1     # 다음 프레임으로
-            if self.Ldive_frame[0] > 2:
-                self.Ldive_frame[0] -= 1
+            self.dive_frame[2] += 1     # 타이머 증가
+            self.dive_frame[1] += 1     # 다음 프레임으로 총 3프레임
+            if self.dive_frame[1] > 2:
+                self.dive_frame[1] -= 1
 
     def spike_motion(self):
         Sprite.sprite_sheets[0].clip_draw((self.spike_frame[1] + 3) * Sprite.sprite_size,
@@ -130,29 +121,26 @@ class player:
                     self.motion = 'jump'
 
     def update_motion(self):
+        if self.motion == 'idle':
+            if self.dir[2]:
+                self.motion = 'jump'
+
         if self.motion == 'jump':
             if self.pos[1] <= floor:
                 self.motion = 'idle'
-        if self.dir[2] and self.motion != 'dive' and self.motion != 'Ldive' and self.motion != 'spike':
-            self.motion = 'jump'
+
         if self.motion == 'dive':
-            if self.dive_frame[1] >= 5:
+            if self.dive_frame[2] >= 5:     # 5프레임이 지나면 idle로 복귀
+                global Move_Speed
+                Move_Speed = 3
                 self.motion = 'idle'
-                self.dive_frame[0] = 0
-                self.dive_frame[1] = 0
-        if self.motion == 'Ldive':
-            if self.Ldive_frame[1] >= 5:
-                self.motion = 'idle'
-                self.Ldive_frame[0] = 0
-                self.Ldive_frame[1] = 0
+                self.dive_frame = [0, 0, 0]
 
     def update(self):
-        if self.motion != 'dive' and self.motion != 'Ldive':
-            self.move()
-        self.draw()
+        self.move()
         self.update_motion()
+        self.draw()
         self.update_frame += 1
-        print(self.dir)
 
 P1 = None
 P2 = None

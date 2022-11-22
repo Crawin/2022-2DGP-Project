@@ -2,48 +2,28 @@ from pico2d import *
 
 import Player
 import Map
-import Player
 import Ball
 import Sprite
+import Events
 
 
 def handle_events(type):            # 키보드 입력
-    match type:
-        case 'play':
-            events = get_events()
-            for event in events:
-                if event.type == SDL_KEYDOWN:
-                    match event.key:
-                        case pico2d.SDLK_g:
-                            Player.P1.dir[0] += 1
-                        case pico2d.SDLK_d:
-                            Player.P1.dir[0] -= 1
-                        case pico2d.SDLK_r:
-                            if Player.P1.pos[1] == Player.floor:
-                                if Player.P1.motion != 'dive' and Player.P1.motion != 'Ldive':
-                                    Player.P1.motion = 'jump'
-                            Player.P1.dir[2] = True
-                        case pico2d.SDLK_z:
-                            if Player.P1.motion == 'idle':
-                                if Player.P1.dir[0] == -1:
-                                    Player.P1.motion = 'Ldive'
-                                else:
-                                    Player.P1.motion = 'dive'
-                            elif Player.P1.motion == 'jump':
-                                Player.P1.motion = 'spike'
-                        case pico2d.SDLK_ESCAPE:
-                            pass
-                elif event.type == SDL_KEYUP:
-                    match event.key:
-                        case pico2d.SDLK_g:
-                            Player.P1.dir[0] -= 1
-                        case pico2d.SDLK_d:
-                            Player.P1.dir[0] += 1
-                        case pico2d.SDLK_r:
-                            Player.P1.dir[2] = False
-            pass
-        case 'main':
-            pass
+    events = get_events()
+    for event in events:
+        if event.type == SDL_KEYDOWN and event.key == pico2d.SDLK_ESCAPE:
+            return False
+        else:
+            Events.keyboard_input(event)
+    return True
+
+
+    # match type:
+    #     case 'play':
+    #         return Events.keyboard_input()
+    #         pass
+    #     case 'main':
+    #         pass
+    # return True
 
 def draw(type):
     match type:
