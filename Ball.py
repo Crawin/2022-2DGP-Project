@@ -16,7 +16,7 @@ class C_ball:
         # self.coll = False
 
     def draw(self):
-        Sprite.sprite_sheets[0].clip_draw((self.frame[1] * Sprite.ball_size) + 87,
+        Sprite.sprite_sheets.clip_draw((self.frame[1] * Sprite.ball_size) + 87,
                                           885 - (157 + Sprite.ball_size),
                                           Sprite.ball_size, Sprite.ball_size,
                                           self.pos[0], self.pos[1])
@@ -45,7 +45,7 @@ class C_ball:
         if self.pos[1] - Sprite.ball_size < floor:
             self.dir[1] = -self.dir[1]
             self.pos[1] += self.dir[1] * self.vel
-            print("gameover")
+            #print("gameover")
             # self.coll = False
 
         if self.pos[1] + Sprite.ball_size > 448:
@@ -69,6 +69,12 @@ class C_ball:
 
         if self.aabb(Player.P1.pos[0] + Sprite.sprite_size / 2 - 10,Player.P1.pos[0] - Sprite.sprite_size / 2 + 30,
                      Player.P1.pos[1] + Sprite.sprite_size / 2 - 10,Player.P1.pos[1] - Sprite.sprite_size / 2 + 50):
+            if Player.P1.motion == 'spike':
+                self.dir = [5, -5]
+                self.pos[0] += self.dir[0] * self.vel
+                self.pos[1] += self.dir[1] * self.vel
+                print("스파이크")
+                pass
             if self.pos[1] > (Player.P1.pos[1] + Sprite.sprite_size / 2 - 10) and self.dir[1] <= 0:
                 self.dir[1] = -self.dir[1]
                 self.pos[1] += self.dir[1] * self.vel

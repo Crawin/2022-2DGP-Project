@@ -5,10 +5,14 @@ floor = 113 - 8
 Jump_Speed = 20
 Move_Speed = 3
 class player:
-    def __init__(self):
-        self.pos = [90, floor]              # x, y 위치
+    def __init__(self,playerNum):
+        if playerNum == 1:
+            self.pos = [90, floor]              # x, y 위치
+        elif playerNum == 2:
+            self.pos = [358, floor]              # x, y 위치
         self.dir = [0, 0, False]            # [+면 우측이동 -면 좌측이동, 점프 스피드, True면 눌린상태]
         self.update_frame = 0               # 입력 딜레이가 0.01이여야 조작감이 좋아서 애니메이션은 딜레이가 0.1이 되도록 하는 변수
+        self.num = playerNum
 
         self.idle_frame = [True, 0]         # True 면 프레임 +, False 면 프레임 -
         self.jump_frame = [True, 1]         # Flag, frame
@@ -30,7 +34,8 @@ class player:
             Move_Speed = max(0, Move_Speed - 7 / 50)
         else:
             self.pos[0] += self.dir[0] * Move_Speed  # 좌우이동
-        self.pos[0] = clamp((Sprite.sprite_size / 2), self.pos[0], 230 - 12 - (Sprite.sprite_size /2))
+        if self.num == 1:
+            self.pos[0] = clamp((Sprite.sprite_size / 2), self.pos[0], 230 - 12 - (Sprite.sprite_size /2))
 
         if self.pos[1] == floor and self.dir[2] and self.motion == 'idle':   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면서 idle 상태면
             self.dir[1] = Jump_Speed
@@ -42,10 +47,16 @@ class player:
             self.pos[1] = floor
 
     def idle_motion(self):
-        Sprite.sprite_sheets[0].clip_draw(self.idle_frame[1] * Sprite.sprite_size,
-                               885 - (266 + Sprite.sprite_size),
-                               Sprite.sprite_size, Sprite.sprite_size,
-                               self.pos[0], self.pos[1])
+        if self.num == 1:
+            Sprite.sprite_sheets.clip_draw(self.idle_frame[1] * Sprite.sprite_size,
+                                   885 - (266 + Sprite.sprite_size),
+                                   Sprite.sprite_size, Sprite.sprite_size,
+                                   self.pos[0], self.pos[1])
+        elif self.num == 2:
+            Sprite.sprite_sheets.clip_composite_draw(self.idle_frame[1] * Sprite.sprite_size,
+                                   885 - (266 + Sprite.sprite_size),
+                                   Sprite.sprite_size, Sprite.sprite_size,0,'h',
+                                       self.pos[0], self.pos[1],66,66)
         if self.update_frame % 10 == 0:
             if self.idle_frame[0]:
                 self.idle_frame[1] += 1
@@ -57,16 +68,17 @@ class player:
                     self.idle_frame[0] = True
 
     def jump_motion(self):
-        if self.jump_frame[1] == 0:
-            Sprite.sprite_sheets[0].clip_draw(self.jump_frame[1] * Sprite.sprite_size,
-                                   885 - (266 + Sprite.sprite_size * 2),
-                                   Sprite.sprite_size, Sprite.sprite_size,
-                                   self.pos[0], self.pos[1])
-        else:
-            Sprite.sprite_sheets[0].clip_draw((self.jump_frame[1] + 4) * Sprite.sprite_size,
-                                   885 - (266 + Sprite.sprite_size),
-                                   Sprite.sprite_size, Sprite.sprite_size,
-                                   self.pos[0], self.pos[1])
+        if self.num == 1:
+            if self.jump_frame[1] == 0:
+                Sprite.sprite_sheets.clip_draw(self.jump_frame[1] * Sprite.sprite_size,
+                                       885 - (266 + Sprite.sprite_size * 2),
+                                       Sprite.sprite_size, Sprite.sprite_size,
+                                       self.pos[0], self.pos[1])
+            else:
+                Sprite.sprite_sheets.clip_draw((self.jump_frame[1] + 4) * Sprite.sprite_size,
+                                       885 - (266 + Sprite.sprite_size),
+                                       Sprite.sprite_size, Sprite.sprite_size,
+                                       self.pos[0], self.pos[1])
 
         if self.update_frame % 5 == 0:
             if self.jump_frame[0]:
@@ -87,16 +99,17 @@ class player:
                     self.jump_frame[0] = True
 
     def dive_motion(self):
-        if self.dive_frame[0] < 0:
-            Sprite.sprite_sheets[0].clip_composite_draw((self.dive_frame[1] + 1) * Sprite.sprite_size,
-                                   885 - (266 + Sprite.sprite_size * 3),
-                                   Sprite.sprite_size, Sprite.sprite_size,0,'h',
-                                   self.pos[0], self.pos[1],66,66)
-        else:
-            Sprite.sprite_sheets[0].clip_draw((self.dive_frame[1] + 1) * Sprite.sprite_size,
-                                   885 - (266 + Sprite.sprite_size * 3),
-                                   Sprite.sprite_size, Sprite.sprite_size,
-                                   self.pos[0], self.pos[1])
+        if self.num == 1:
+            if self.dive_frame[0] < 0:
+                Sprite.sprite_sheets.clip_composite_draw((self.dive_frame[1] + 1) * Sprite.sprite_size,
+                                       885 - (266 + Sprite.sprite_size * 3),
+                                       Sprite.sprite_size, Sprite.sprite_size,0,'h',
+                                       self.pos[0], self.pos[1],66,66)
+            else:
+                Sprite.sprite_sheets.clip_draw((self.dive_frame[1] + 1) * Sprite.sprite_size,
+                                       885 - (266 + Sprite.sprite_size * 3),
+                                       Sprite.sprite_size, Sprite.sprite_size,
+                                       self.pos[0], self.pos[1])
 
         if self.update_frame % 10 == 0:
             self.dive_frame[2] += 1     # 타이머 증가
@@ -105,10 +118,11 @@ class player:
                 self.dive_frame[1] -= 1
 
     def spike_motion(self):
-        Sprite.sprite_sheets[0].clip_draw((self.spike_frame[1] + 3) * Sprite.sprite_size,
-                               885 - (266 + Sprite.sprite_size * 2),
-                               Sprite.sprite_size, Sprite.sprite_size,
-                               self.pos[0], self.pos[1])
+        if self.num == 1:
+            Sprite.sprite_sheets.clip_draw((self.spike_frame[1] + 3) * Sprite.sprite_size,
+                                   885 - (266 + Sprite.sprite_size * 2),
+                                   Sprite.sprite_size, Sprite.sprite_size,
+                                   self.pos[0], self.pos[1])
         if self.update_frame % 5 == 0:
             if self.spike_frame[0]:
                 self.spike_frame[1] += 1
@@ -146,11 +160,16 @@ P1 = None
 P2 = None
 def enter():
     global P1
-    P1 = player()
+    global P2
+    P1 = player(1)
+    P2 = player(2)
 
 def exit():
     global P1
     del P1
+    global P2
+    del P2
 
 def update():
     P1.update()
+    P2.update()
