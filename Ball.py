@@ -57,8 +57,8 @@ class C_ball:
             self.pos[0] += self.dir[0] * self.vel
             # self.coll = False
 
-        if self.aabb(230 + 8,230 - 8,70 + 16 * 8+8,80 - 8):
-            if self.pos[0] >=230 - 8 and self.pos[0] <= 230 + 8:
+        if self.aabb(230 + 8, 230 - 8, 70 + 16 * 8+8, 80 - 8):
+            if self.pos[1] - Sprite.ball_size / 2 >= 70 + 16 * 8+8 or (self.pos[0] <= 230 + 8 and self.pos[0] >= 230 - 8):
                 self.dir[1] = -self.dir[1]
                 self.pos[1] += self.dir[1] * self.vel
             else:
