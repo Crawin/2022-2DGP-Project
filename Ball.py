@@ -45,6 +45,7 @@ class C_ball:
         if self.pos[1] - Sprite.ball_size < floor:
             self.dir[1] = -self.dir[1]
             self.pos[1] += self.dir[1] * self.vel
+            print("gameover")
             # self.coll = False
 
         if self.pos[1] + Sprite.ball_size > 448:
@@ -58,7 +59,7 @@ class C_ball:
             # self.coll = False
 
         if self.aabb(230 + 8, 230 - 8, 70 + 16 * 8+8, 80 - 8):
-            if self.pos[1] - Sprite.ball_size / 2 >= 70 + 16 * 8+8 or (self.pos[0] <= 230 + 8 and self.pos[0] >= 230 - 8):
+            if self.pos[1] >= 70 + 16 * 8+8 or (self.pos[0] <= 230 + 8 and self.pos[0] >= 230 - 8):
                 self.dir[1] = -self.dir[1]
                 self.pos[1] += self.dir[1] * self.vel
             else:
@@ -73,12 +74,6 @@ class C_ball:
                 self.pos[1] += self.dir[1] * self.vel
             self.dir[0] = min(10, self.dir[0] + Player.P1.dir[0])
             self.dir[1] = min(10, self.dir[1] + Player.P1.dir[1])
-            # if not self.coll:
-            #     self.coll = True
-            #     if self.pos[1] > (Player.P1.pos[1] + Sprite.sprite_size / 2 - 10) and self.dir[1] <= 0:
-            #         self.dir = [self.dir[0], -self.dir[1]]
-            #     self.dir[0] = min(10, self.dir[0] + Player.P1.dir[0])
-            #     self.dir[1] = min(10, self.dir[1] + Player.P1.dir[1])
 
 ball = None
 
