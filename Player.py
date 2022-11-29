@@ -2,7 +2,7 @@ from pico2d import *
 import Sprite
 
 floor = 113 - 8
-Jump_Speed = 20
+
 
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
 RUN_SPEED_KMPH = 15 # Km / Hour
@@ -10,6 +10,12 @@ RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 Move_Speed = RUN_SPEED_PPS
+
+JUMP_SPEED_KMPH = 150
+JUMP_SPEED_MPM = (JUMP_SPEED_KMPH * 1000.0 / 60.0)
+JUMP_SPEED_MPS = (JUMP_SPEED_MPM / 60.0)
+JUMP_SPEED_PPS = (JUMP_SPEED_MPS * PIXEL_PER_METER)
+Jump_Speed = JUMP_SPEED_PPS
 class player:
     def __init__(self,playerNum):
         if playerNum == 1:
@@ -44,7 +50,8 @@ class player:
             self.pos[0] = clamp((Sprite.sprite_size / 2), self.pos[0], 230 - 12 - (Sprite.sprite_size /2))
 
         if self.pos[1] == floor and self.dir[2] and self.motion == 'idle':   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면서 idle 상태면
-            self.dir[1] = Jump_Speed
+            self.dir[1] = Jump_Speed * eTime
+            print(self.dir[1])
         self.pos[1] += self.dir[1]        # 점프
         if self.pos[1] > floor:
             self.dir[1] -= 1
