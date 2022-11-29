@@ -25,11 +25,11 @@ def handle_events(type):            # 키보드 입력
     #         pass
     # return True
 
-def draw(type):
+def draw(type, eTime):
     match type:
         case 'play':
             Map.draw()
-            Player.update()
+            Player.update(eTime)
             Ball.update()
         case 'main':
             pass

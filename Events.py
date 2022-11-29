@@ -17,7 +17,7 @@ def keyboard_input(event):
             case pico2d.SDLK_z:
                 if Player.P1.motion == 'idle':
                     Player.P1.motion = 'dive'
-                    Player.Move_Speed = 7
+                    Player.Move_Speed = Player.RUN_SPEED_PPS * 2
                     if Player.P1.dir[0] < 0:
                         Player.P1.dive_frame[0] = -1            # z키를 눌렀을때 어디 방향을 보고 있는지 입력
                     else:

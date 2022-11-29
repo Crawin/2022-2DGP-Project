@@ -3,7 +3,13 @@ import Sprite
 
 floor = 113 - 8
 Jump_Speed = 20
-Move_Speed = 3
+
+PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
+RUN_SPEED_KMPH = 15 # Km / Hour
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+Move_Speed = RUN_SPEED_PPS
 class player:
     def __init__(self,playerNum):
         if playerNum == 1:
@@ -26,20 +32,20 @@ class player:
     def draw(self):
         self.motion_type[self.motion]()
 
-    def move(self):
+    def move(self, eTime):
         global Move_Speed
         # 다이브 모션 진행중이면 다이빙
         if self.motion == 'dive':
-            self.pos[0] += self.dive_frame[0] * Move_Speed  # 좌우이동
-            Move_Speed = max(0, Move_Speed - 7 / 50)
+            self.pos[0] += self.dive_frame[0] * Move_Speed * eTime  # 좌우이동
+            Move_Speed = max(0, Move_Speed - RUN_SPEED_PPS*2 / 50)
         else:
-            self.pos[0] += self.dir[0] * Move_Speed  # 좌우이동
+            self.pos[0] += self.dir[0] * Move_Speed * eTime # 좌우이동
         if self.num == 1:
             self.pos[0] = clamp((Sprite.sprite_size / 2), self.pos[0], 230 - 12 - (Sprite.sprite_size /2))
 
         if self.pos[1] == floor and self.dir[2] and self.motion == 'idle':   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면서 idle 상태면
             self.dir[1] = Jump_Speed
-        self.pos[1] += self.dir[1]         # 점프
+        self.pos[1] += self.dir[1]        # 점프
         if self.pos[1] > floor:
             self.dir[1] -= 1
         else:
@@ -146,12 +152,12 @@ class player:
         if self.motion == 'dive':
             if self.dive_frame[2] >= 5:     # 5프레임이 지나면 idle로 복귀
                 global Move_Speed
-                Move_Speed = 3
+                Move_Speed = RUN_SPEED_PPS
                 self.motion = 'idle'
                 self.dive_frame = [0, 0, 0]
 
-    def update(self):
-        self.move()
+    def update(self, eTime):
+        self.move(eTime)
         self.update_motion()
         self.draw()
         self.update_frame += 1
@@ -170,6 +176,6 @@ def exit():
     global P2
     del P2
 
-def update():
-    P1.update()
-    P2.update()
+def update(eTime):
+    P1.update(eTime)
+    P2.update(eTime)
