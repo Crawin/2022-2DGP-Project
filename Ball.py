@@ -6,14 +6,19 @@ import math
 # 885
 # 87 157
 floor = 113 - Sprite.sprite_size
+
+PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
+BALL_SPEED_KMPH = 10 # Km / Hour
+BALL_SPEED_MPM = (BALL_SPEED_KMPH * 1000.0 / 60.0)
+BALL_SPEED_MPS = (BALL_SPEED_MPM / 60.0)
+BALL_SPEED_PPS = (BALL_SPEED_MPS * PIXEL_PER_METER)
 class C_ball:
     def __init__(self):
         self.pos = [90, 300]
         self.frame = [0, 0]         # 매 프레임마다 1씩 증가, 10프레임마다 1씩 증가
         self.dir = [0, -1]          # 방향벡터
-        self.colldir = [0, 1]       # 충돌시 방향벡터
-        self.vel = 1
-        # self.coll = False
+        self.vel = BALL_SPEED_PPS
+        self.coll = ""
 
     def draw(self):
         Sprite.sprite_sheets.clip_draw((self.frame[1] * Sprite.ball_size) + 87,
@@ -25,13 +30,14 @@ class C_ball:
             self.frame[1] = (self.frame[1] + 1) % 5
 
 
-    def move(self):
+    def move(self, eTime):
         # if self.dir[1] * (self.dir[1] - 0.1) < 0:
         #     self.coll = False
         self.dir[1] = self.dir[1] - 0.1
-        self.pos[0] += self.dir[0] * self.vel
-        self.pos[1] += self.dir[1] * self.vel
-        self.collision()
+        self.pos[0] += self.dir[0] * self.vel * eTime
+        self.pos[1] += self.dir[1] * self.vel * eTime
+        print(self.pos)
+        self.collision(eTime)
 
     def aabb(self,rx,lx,ty,by):
         draw_rectangle(lx, by, rx, ty)
@@ -41,45 +47,57 @@ class C_ball:
             return False
         return True
 
-    def collision(self):
+    def collision(self,eTime):
         if self.pos[1] - Sprite.ball_size < floor:
             self.dir[1] = -self.dir[1]
-            self.pos[1] += self.dir[1] * self.vel
+            self.pos[1] += self.dir[1] * self.vel * eTime
             #print("gameover")
-            # self.coll = False
+            self.coll = "floor"
 
         if self.pos[1] + Sprite.ball_size > 448:
             self.dir[1] = -self.dir[1]
-            self.pos[1] += self.dir[1] * self.vel
-            # self.coll = False
+            self.pos[1] += self.dir[1] * self.vel * eTime
+            self.coll = "top"
 
         if self.pos[0] - Sprite.ball_size / 2 < 0 or self.pos[0] + Sprite.ball_size / 2 > 448:
             self.dir[0] = -self.dir[0]
-            self.pos[0] += self.dir[0] * self.vel
-            # self.coll = False
+            self.pos[0] += self.dir[0] * self.vel* eTime
+            self.coll = "side"
 
-        if self.aabb(230 + 8, 230 - 8, 70 + 16 * 8+8, 80 - 8):
-            if self.pos[1] >= 70 + 16 * 8+8 or (self.pos[0] <= 230 + 8 and self.pos[0] >= 230 - 8):
-                self.dir[1] = -self.dir[1]
-                self.pos[1] += self.dir[1] * self.vel
-            else:
-                self.dir[0] = -self.dir[0]
-                self.pos[0] += self.dir[0] * self.vel
-            # self.coll = False
+        if self.coll != "bar":
+            if self.aabb(230 + 8, 230 - 8, 70 + 16 * 8+8, 80 - 8):  # 기둥과 충돌
+                self.coll = "bar"
+                if self.pos[1] >= 70 + 16 * 8+8 or (self.pos[0] <= 230 + 8 and self.pos[0] >= 230 - 8):
+                    print(f"상단 기존 y벡터 {self.dir[1]}")
+                    self.dir[1] = -self.dir[1]
+                    print(f"상단 이후 y벡터 {self.dir[1]}")
+                    self.pos[1] += self.dir[1] * self.vel* eTime
+                    self.pos[0] -= self.dir[0] * self.vel* eTime
+                else:
+                    self.dir[0] = -self.dir[0]
+                    self.pos[0] += self.dir[0] * self.vel* eTime
+                    self.pos[1] -= self.dir[1] * self.vel* eTime
 
         if self.aabb(Player.P1.pos[0] + Sprite.sprite_size / 2 - 10,Player.P1.pos[0] - Sprite.sprite_size / 2 + 30,
                      Player.P1.pos[1] + Sprite.sprite_size / 2 - 10,Player.P1.pos[1] - Sprite.sprite_size / 2 + 50):
-            if Player.P1.motion == 'spike':
-                self.dir = [5, -5]
-                self.pos[0] += self.dir[0] * self.vel
-                self.pos[1] += self.dir[1] * self.vel
-                print("스파이크")
-                pass
+            self.coll = "P1"
             if self.pos[1] > (Player.P1.pos[1] + Sprite.sprite_size / 2 - 10) and self.dir[1] <= 0:
                 self.dir[1] = -self.dir[1]
-                self.pos[1] += self.dir[1] * self.vel
+                self.pos[1] += self.dir[1] * self.vel * eTime
+                self.pos[0] += self.dir[0] * self.vel * eTime
             self.dir[0] = min(10, self.dir[0] + Player.P1.dir[0])
             self.dir[1] = min(10, self.dir[1] + Player.P1.dir[1])
+
+        if Player.P1.motion == 'spike':
+            if self.aabb(Player.P1.pos[0] + Sprite.sprite_size / 2,
+                         Player.P1.pos[0] - Sprite.sprite_size / 2 + 30,
+                         Player.P1.pos[1] + Sprite.sprite_size / 2 + 10,
+                         Player.P1.pos[1] - Sprite.sprite_size / 2):
+                self.coll = "P1"
+                self.dir = [5, -5]
+                self.pos[0] += self.dir[0] * self.vel * eTime
+                self.pos[1] += self.dir[1] * self.vel * eTime
+            pass
 
 ball = None
 
@@ -91,8 +109,8 @@ def exit():
     global ball
     del ball
 
-def update():
-    ball.move()
+def update(eTime):
+    ball.move(eTime)
     ball.draw()
     update_canvas()
 

@@ -30,7 +30,7 @@ def draw(type, eTime):
         case 'play':
             Map.draw()
             Player.update(eTime)
-            Ball.update()
+            Ball.update(eTime)
         case 'main':
             pass
 
