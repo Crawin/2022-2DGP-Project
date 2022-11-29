@@ -51,7 +51,6 @@ class player:
 
         if self.pos[1] == floor and self.dir[2] and self.motion == 'idle':   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면서 idle 상태면
             self.dir[1] = Jump_Speed * eTime
-            print(self.dir[1])
         self.pos[1] += self.dir[1]        # 점프
         if self.pos[1] > floor:
             self.dir[1] -= 1
