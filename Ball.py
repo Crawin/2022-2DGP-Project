@@ -68,7 +68,7 @@ class C_ball:
         if self.pos[1] - ball_size/2 < floor:
             self.dir[1] = -self.dir[1]
             self.pos = [self.prepos[0],self.prepos[1]]
-            #print("gameover")
+            print("gameover")
             self.coll = "floor"
 
         if self.pos[1]> 448:
@@ -87,8 +87,10 @@ class C_ball:
                 self.pos = [self.prepos[0], self.prepos[1]]
                 if self.pos[0] < 230 + 8 and self.pos[0] > 230 -8 and self.pos[1] > 70 + 16 * 8+8:
                     self.dir[1] = -self.dir[1]
-                else:
-                    self.dir[0] = -self.dir[0]
+                elif self.pos[0] >= 230 + 8:
+                    self.dir[0] = abs(self.dir[0])
+                elif self.pos[0] <= 230 - 8:
+                    self.dir[0] = -abs(self.dir[0])
 
         if Player.P1.motion == 'spike' and self.coll != "spikeP1":
             if self.aabb(Player.P1.pos[0] + sprite_size / 2,
@@ -98,9 +100,9 @@ class C_ball:
                 self.coll = "spikeP1"
                 self.spikeTime = time.time()
                 self.spikePos = [self.pos[0],self.pos[1]]
-                self.dir = [5,-3]
+                self.dir = [5, -3]
                 self.pos = [self.prepos[0],self.prepos[1]]
-        elif Player.P1.motion == 'dive':
+        elif Player.P1.motion == 'dive' and self.coll != "P1":
             if self.aabb(Player.P1.pos[0] + sprite_size / 2,
                          Player.P1.pos[0] - sprite_size / 2,
                          Player.P1.pos[1] + sprite_size / 2 - 30,
