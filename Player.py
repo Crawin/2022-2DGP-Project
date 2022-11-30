@@ -1,8 +1,6 @@
 from pico2d import *
 import Sprite
-
-floor = 113 - 8
-
+from Define import *
 
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
 RUN_SPEED_KMPH = 20 # Km / Hour
@@ -19,9 +17,9 @@ Jump_Speed = JUMP_SPEED_PPS
 class player:
     def __init__(self,playerNum):
         if playerNum == 1:
-            self.pos = [90, floor]              # x, y 위치
+            self.pos = [90, floor + sprite_size]              # x, y 위치
         elif playerNum == 2:
-            self.pos = [358, floor]              # x, y 위치
+            self.pos = [358, floor+ sprite_size]              # x, y 위치
         self.dir = [0, 0, False]            # [+면 우측이동 -면 좌측이동, 점프 스피드, True면 눌린상태]
         self.update_frame = 0               # 입력 딜레이가 0.01이여야 조작감이 좋아서 애니메이션은 딜레이가 0.1이 되도록 하는 변수
         self.num = playerNum
@@ -47,27 +45,27 @@ class player:
         else:
             self.pos[0] += self.dir[0] * Move_Speed * eTime # 좌우이동
         if self.num == 1:
-            self.pos[0] = clamp((Sprite.sprite_size / 2), self.pos[0], 230 - 12 - (Sprite.sprite_size /2))
+            self.pos[0] = clamp((sprite_size / 2), self.pos[0], 230 - 12 - (sprite_size /2))
 
-        if self.pos[1] == floor and self.dir[2] and self.motion == 'idle':   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면서 idle 상태면
+        if self.pos[1]-sprite_size == floor and self.dir[2] and self.motion == 'idle':   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면서 idle 상태면
             self.dir[1] = Jump_Speed * eTime
         self.pos[1] += self.dir[1]        # 점프
-        if self.pos[1] > floor:
+        if self.pos[1]-sprite_size > floor:
             self.dir[1] -= 1
         else:
             self.dir[1] = 0
-            self.pos[1] = floor
+            self.pos[1] = floor +sprite_size
 
     def idle_motion(self):
         if self.num == 1:
-            Sprite.sprite_sheets.clip_draw(self.idle_frame[1] * Sprite.sprite_size,
-                                   885 - (266 + Sprite.sprite_size),
-                                   Sprite.sprite_size, Sprite.sprite_size,
+            Sprite.sprite_sheets.clip_draw(self.idle_frame[1] * sprite_size,
+                                   885 - (266 + sprite_size),
+                                   sprite_size, sprite_size,
                                    self.pos[0], self.pos[1])
         elif self.num == 2:
-            Sprite.sprite_sheets.clip_composite_draw(self.idle_frame[1] * Sprite.sprite_size,
-                                   885 - (266 + Sprite.sprite_size),
-                                   Sprite.sprite_size, Sprite.sprite_size,0,'h',
+            Sprite.sprite_sheets.clip_composite_draw(self.idle_frame[1] * sprite_size,
+                                   885 - (266 + sprite_size),
+                                   sprite_size, sprite_size,0,'h',
                                        self.pos[0], self.pos[1],66,66)
         if self.update_frame % 10 == 0:
             if self.idle_frame[0]:
@@ -82,14 +80,14 @@ class player:
     def jump_motion(self):
         if self.num == 1:
             if self.jump_frame[1] == 0:
-                Sprite.sprite_sheets.clip_draw(self.jump_frame[1] * Sprite.sprite_size,
-                                       885 - (266 + Sprite.sprite_size * 2),
-                                       Sprite.sprite_size, Sprite.sprite_size,
+                Sprite.sprite_sheets.clip_draw(self.jump_frame[1] * sprite_size,
+                                       885 - (266 + sprite_size * 2),
+                                       sprite_size, sprite_size,
                                        self.pos[0], self.pos[1])
             else:
-                Sprite.sprite_sheets.clip_draw((self.jump_frame[1] + 4) * Sprite.sprite_size,
-                                       885 - (266 + Sprite.sprite_size),
-                                       Sprite.sprite_size, Sprite.sprite_size,
+                Sprite.sprite_sheets.clip_draw((self.jump_frame[1] + 4) * sprite_size,
+                                       885 - (266 + sprite_size),
+                                       sprite_size, sprite_size,
                                        self.pos[0], self.pos[1])
 
         if self.update_frame % 5 == 0:
@@ -113,14 +111,14 @@ class player:
     def dive_motion(self):
         if self.num == 1:
             if self.dive_frame[0] < 0:
-                Sprite.sprite_sheets.clip_composite_draw((self.dive_frame[1] + 1) * Sprite.sprite_size,
-                                       885 - (266 + Sprite.sprite_size * 3),
-                                       Sprite.sprite_size, Sprite.sprite_size,0,'h',
+                Sprite.sprite_sheets.clip_composite_draw((self.dive_frame[1] + 1) * sprite_size,
+                                       885 - (266 + sprite_size * 3),
+                                       sprite_size, sprite_size,0,'h',
                                        self.pos[0], self.pos[1],66,66)
             else:
-                Sprite.sprite_sheets.clip_draw((self.dive_frame[1] + 1) * Sprite.sprite_size,
-                                       885 - (266 + Sprite.sprite_size * 3),
-                                       Sprite.sprite_size, Sprite.sprite_size,
+                Sprite.sprite_sheets.clip_draw((self.dive_frame[1] + 1) * sprite_size,
+                                       885 - (266 + sprite_size * 3),
+                                       sprite_size, sprite_size,
                                        self.pos[0], self.pos[1])
 
         if self.update_frame % 10 == 0:
@@ -131,9 +129,9 @@ class player:
 
     def spike_motion(self):
         if self.num == 1:
-            Sprite.sprite_sheets.clip_draw((self.spike_frame[1] + 3) * Sprite.sprite_size,
-                                   885 - (266 + Sprite.sprite_size * 2),
-                                   Sprite.sprite_size, Sprite.sprite_size,
+            Sprite.sprite_sheets.clip_draw((self.spike_frame[1] + 3) * sprite_size,
+                                   885 - (266 + sprite_size * 2),
+                                   sprite_size, sprite_size,
                                    self.pos[0], self.pos[1])
         if self.update_frame % 5 == 0:
             if self.spike_frame[0]:
@@ -152,7 +150,7 @@ class player:
                 self.motion = 'jump'
 
         if self.motion == 'jump':
-            if self.pos[1] <= floor:
+            if self.pos[1] -sprite_size <= floor:
                 self.motion = 'idle'
 
         if self.motion == 'dive':

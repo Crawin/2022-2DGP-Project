@@ -1,8 +1,6 @@
 from pico2d import *
 
-sprite_sheets = [None, None]
-sprite_size = 66
-ball_size = 42
+sprite_sheets = []
 def load_sprites():
     global sprite_sheets
     sprite_sheets = load_image('Resource/Image/sprite_sheet.png')
