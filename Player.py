@@ -49,7 +49,6 @@ class player:
                 self.pos[0] += self.dir[0] * Move_Speed * eTime # 좌우이동
             if self.num == 1:
                 self.pos[0] = clamp((sprite_size / 2), self.pos[0], 230 - 12 - (sprite_size /2))
-
             if self.pos[1]-sprite_size == floor and self.dir[2] and self.motion == 'idle':   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면서 idle 상태면
                 self.dir[1] = Jump_Speed * eTime
             self.pos[1] += self.dir[1]        # 점프
@@ -59,7 +58,24 @@ class player:
                 self.dir[1] = 0
                 self.pos[1] = floor +sprite_size
         elif self.type == 'AI':
-            print(Ball.ball.dir)
+            # print(f"dir: {Ball.ball.dir} , pos: {Ball.ball.pos}")
+            u2 = Ball.ball.dir[1]
+            if u2 < 0:
+                x1 = Ball.ball.pos[0]
+                y1 = Ball.ball.pos[1]
+                u1 = Ball.ball.dir[0]
+                if u1 != 0 and u2 != 0:
+                    goalx = (-y1*u1/u2) + x1
+                    AIdirx = goalx - self.pos[0]
+                    if AIdirx > 0:
+                        self.dir[0] = 1
+                    elif AIdirx < 0:
+                        self.dir[0] = -1
+                    else:
+                        self.dir[0] = 0
+                    self.pos[0] += self.dir[0] * Move_Speed * eTime  # 좌우이동
+                    self.pos[0] = clamp(230 + 12 + (sprite_size / 2), self.pos[0], 433 - (sprite_size / 2))
+                    # print(f"goalx = {goalx}, ball[x] = {Ball.ball.pos[0]}")
             pass
 
     def idle_motion(self):
