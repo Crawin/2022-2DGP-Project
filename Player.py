@@ -10,6 +10,7 @@ RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 Move_Speed = RUN_SPEED_PPS
+Move_Speed2 = RUN_SPEED_PPS
 
 JUMP_SPEED_KMPH = 150
 JUMP_SPEED_MPM = (JUMP_SPEED_KMPH * 1000.0 / 60.0)
@@ -38,9 +39,10 @@ class player:
 
     def draw(self):
         self.motion_type[self.motion]()
+        print(self.pos[1])
 
     def move(self, eTime):
-        global Move_Speed
+        global Move_Speed, Move_Speed2
         if self.type == 'PLAYER':
             # 다이브 모션 진행중이면 다이빙
             if self.motion == 'dive':
@@ -67,7 +69,6 @@ class player:
                 if u1 != 0 and u2 != 0:
                     goalx = (((self.pos[1] + sprite_size / 2 - 10)-y1)*u1/u2) + x1
                     spikex = ((300-y1)*u1/u2) + x1
-                    # print(f"spikex: {spikex}, pos: {self.pos[0]}")
                     AIdirx = goalx - self.pos[0]
                     if AIdirx > 0:
                         self.dir[0] = 1
@@ -75,10 +76,19 @@ class player:
                         self.dir[0] = -1
                     else:
                         self.dir[0] = 0
-                    self.pos[0] += self.dir[0] * Move_Speed * eTime  # 좌우이동
+                    if abs(self.pos[0] - goalx) > 20 and x1 > 230 and self.motion == "idle" and y1 < 200:
+                        self.motion = 'dive'
+                        self.dive_frame[0] = self.dir[0]
+                        print(self.dive_frame[0])
+                        Move_Speed2 = RUN_SPEED_PPS * 2
+
+                    if self.motion == 'dive':
+                        self.pos[0] += self.dive_frame[0] * Move_Speed2 * eTime  # 좌우이동
+                        Move_Speed2 = max(0, Move_Speed2 - RUN_SPEED_PPS * 2 / 50)
+                    else:
+                        self.pos[0] += self.dir[0] * Move_Speed2 * eTime  # 좌우이동
                     self.pos[0] = clamp(230 + 12 + (sprite_size / 2), self.pos[0], 433 - (sprite_size / 2))
-                    # if abs(self.pos[0] - goalx) < 30 and y1 > 300 and self.motion == 'idle':
-                    # print(abs((self.pos[1] + sprite_size / 2 - 10) - y1))
+
                     if self.motion == 'idle' and (abs(self.pos[0] - spikex) < 20 or abs((self.pos[1] + sprite_size / 2 - 10) - y1) < 30):
                         self.dir[1] = Jump_Speed * eTime
                         self.dir[2] = True
@@ -91,7 +101,6 @@ class player:
             else:
                 self.dir[1] = 0
                 self.pos[1] = floor + sprite_size
-            # print(self.motion)
     def idle_motion(self):
         if self.num == 1:
             Sprite.sprite_sheets.clip_draw(self.idle_frame[1] * sprite_size,
@@ -157,6 +166,17 @@ class player:
 
     def dive_motion(self):
         if self.num == 1:
+            if self.dive_frame[0] < 0:
+                Sprite.sprite_sheets.clip_composite_draw((self.dive_frame[1] + 1) * sprite_size,
+                                       885 - (266 + sprite_size * 3),
+                                       sprite_size, sprite_size,0,'h',
+                                       self.pos[0], self.pos[1],66,66)
+            else:
+                Sprite.sprite_sheets.clip_draw((self.dive_frame[1] + 1) * sprite_size,
+                                       885 - (266 + sprite_size * 3),
+                                       sprite_size, sprite_size,
+                                       self.pos[0], self.pos[1])
+        elif self.num == 2:
             if self.dive_frame[0] < 0:
                 Sprite.sprite_sheets.clip_composite_draw((self.dive_frame[1] + 1) * sprite_size,
                                        885 - (266 + sprite_size * 3),
