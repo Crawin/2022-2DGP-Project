@@ -1,6 +1,7 @@
 from pico2d import *
 import Sprite
 from Define import *
+import Ball
 
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
 RUN_SPEED_KMPH = 20 # Km / Hour
@@ -15,7 +16,7 @@ JUMP_SPEED_MPS = (JUMP_SPEED_MPM / 60.0)
 JUMP_SPEED_PPS = (JUMP_SPEED_MPS * PIXEL_PER_METER)
 Jump_Speed = JUMP_SPEED_PPS
 class player:
-    def __init__(self,playerNum):
+    def __init__(self, playerNum, type):
         if playerNum == 1:
             self.pos = [90, floor + sprite_size]              # x, y 위치
         elif playerNum == 2:
@@ -23,6 +24,7 @@ class player:
         self.dir = [0, 0, False]            # [+면 우측이동 -면 좌측이동, 점프 스피드, True면 눌린상태]
         self.update_frame = 0               # 입력 딜레이가 0.01이여야 조작감이 좋아서 애니메이션은 딜레이가 0.1이 되도록 하는 변수
         self.num = playerNum
+        self.type = type
 
         self.idle_frame = [True, 0]         # True 면 프레임 +, False 면 프레임 -
         self.jump_frame = [True, 1]         # Flag, frame
@@ -38,23 +40,27 @@ class player:
 
     def move(self, eTime):
         global Move_Speed
-        # 다이브 모션 진행중이면 다이빙
-        if self.motion == 'dive':
-            self.pos[0] += self.dive_frame[0] * Move_Speed * eTime  # 좌우이동
-            Move_Speed = max(0, Move_Speed - RUN_SPEED_PPS*2 / 50)
-        else:
-            self.pos[0] += self.dir[0] * Move_Speed * eTime # 좌우이동
-        if self.num == 1:
-            self.pos[0] = clamp((sprite_size / 2), self.pos[0], 230 - 12 - (sprite_size /2))
+        if self.type == 'PLAYER':
+            # 다이브 모션 진행중이면 다이빙
+            if self.motion == 'dive':
+                self.pos[0] += self.dive_frame[0] * Move_Speed * eTime  # 좌우이동
+                Move_Speed = max(0, Move_Speed - RUN_SPEED_PPS*2 / 50)
+            else:
+                self.pos[0] += self.dir[0] * Move_Speed * eTime # 좌우이동
+            if self.num == 1:
+                self.pos[0] = clamp((sprite_size / 2), self.pos[0], 230 - 12 - (sprite_size /2))
 
-        if self.pos[1]-sprite_size == floor and self.dir[2] and self.motion == 'idle':   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면서 idle 상태면
-            self.dir[1] = Jump_Speed * eTime
-        self.pos[1] += self.dir[1]        # 점프
-        if self.pos[1]-sprite_size > floor:
-            self.dir[1] -= 1
-        else:
-            self.dir[1] = 0
-            self.pos[1] = floor +sprite_size
+            if self.pos[1]-sprite_size == floor and self.dir[2] and self.motion == 'idle':   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면서 idle 상태면
+                self.dir[1] = Jump_Speed * eTime
+            self.pos[1] += self.dir[1]        # 점프
+            if self.pos[1]-sprite_size > floor:
+                self.dir[1] -= 1
+            else:
+                self.dir[1] = 0
+                self.pos[1] = floor +sprite_size
+        elif self.type == 'AI':
+            print(Ball.ball.dir)
+            pass
 
     def idle_motion(self):
         if self.num == 1:
@@ -171,8 +177,8 @@ P2 = None
 def enter():
     global P1
     global P2
-    P1 = player(1)
-    P2 = player(2)
+    P1 = player(1, 'PLAYER')
+    P2 = player(2, 'AI')
 
 def exit():
     global P1
