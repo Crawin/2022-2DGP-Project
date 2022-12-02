@@ -125,14 +125,14 @@ class C_ball:
                 self.dir[1] = min(8, abs(self.dir[1] + Player.P1.dir[1]))
 
         if Player.P2.motion == 'spike' and self.coll != "spikeP2":
-            if self.aabb(Player.P2.pos[0] + sprite_size / 2,
-                         Player.P2.pos[0] - sprite_size / 2 + 30,
+            if self.aabb(Player.P2.pos[0] + sprite_size / 2 - 30,
+                         Player.P2.pos[0] - sprite_size / 2,
                          Player.P2.pos[1] + sprite_size / 2 + 10,
                          Player.P2.pos[1] - sprite_size / 2 + 30):
                 self.coll = "spikeP2"
                 self.spikeTime = time.time()
                 self.spikePos = [self.pos[0],self.pos[1]]
-                self.dir = [5, -3]
+                self.dir = [-5, -3]
                 self.pos = [self.prepos[0],self.prepos[1]]
         elif Player.P2.motion == 'dive' and self.coll != "P2":
             if self.aabb(Player.P2.pos[0] + sprite_size / 2,
@@ -143,8 +143,8 @@ class C_ball:
                 self.dir[1] = -self.dir[1]
                 self.pos = [self.prepos[0], self.prepos[1]]
         elif self.coll != "spikeP2" and self.dir[1] < -1:
-            if self.aabb(Player.P2.pos[0] + sprite_size / 2 - 10,
-                         Player.P2.pos[0] - sprite_size / 2 + 30,
+            if self.aabb(Player.P2.pos[0] + sprite_size / 2 - 30,
+                         Player.P2.pos[0] - sprite_size / 2 + 10,
                          Player.P2.pos[1] + sprite_size / 2 - 10,
                          Player.P2.pos[1] - sprite_size / 2 + 50):
                 self.coll = "P2"

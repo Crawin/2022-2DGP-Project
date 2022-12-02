@@ -2,6 +2,7 @@ from pico2d import *
 import Sprite
 from Define import *
 import Ball
+import math
 
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
 RUN_SPEED_KMPH = 20 # Km / Hour
@@ -58,14 +59,15 @@ class player:
                 self.dir[1] = 0
                 self.pos[1] = floor +sprite_size
         elif self.type == 'AI':
-            # print(f"dir: {Ball.ball.dir} , pos: {Ball.ball.pos}")
             u2 = Ball.ball.dir[1]
             if u2 < 0:
                 x1 = Ball.ball.pos[0]
                 y1 = Ball.ball.pos[1]
                 u1 = Ball.ball.dir[0]
                 if u1 != 0 and u2 != 0:
-                    goalx = (-y1*u1/u2) + x1
+                    goalx = (((self.pos[1] + sprite_size / 2 - 10)-y1)*u1/u2) + x1
+                    spikex = ((300-y1)*u1/u2) + x1
+                    # print(f"spikex: {spikex}, pos: {self.pos[0]}")
                     AIdirx = goalx - self.pos[0]
                     if AIdirx > 0:
                         self.dir[0] = 1
@@ -75,9 +77,21 @@ class player:
                         self.dir[0] = 0
                     self.pos[0] += self.dir[0] * Move_Speed * eTime  # 좌우이동
                     self.pos[0] = clamp(230 + 12 + (sprite_size / 2), self.pos[0], 433 - (sprite_size / 2))
-                    # print(f"goalx = {goalx}, ball[x] = {Ball.ball.pos[0]}")
-            pass
-
+                    # if abs(self.pos[0] - goalx) < 30 and y1 > 300 and self.motion == 'idle':
+                    # print(abs((self.pos[1] + sprite_size / 2 - 10) - y1))
+                    if self.motion == 'idle' and (abs(self.pos[0] - spikex) < 20 or abs((self.pos[1] + sprite_size / 2 - 10) - y1) < 30):
+                        self.dir[1] = Jump_Speed * eTime
+                        self.dir[2] = True
+                    spikegoalx = (128-self.pos[1])*(-5)/(-3) + self.pos[0]
+                    if self.motion == 'jump' and spikegoalx < 230:
+                        self.motion = 'spike'
+            self.pos[1] += self.dir[1]  # 점프
+            if self.pos[1] - sprite_size > floor:
+                self.dir[1] -= 1
+            else:
+                self.dir[1] = 0
+                self.pos[1] = floor + sprite_size
+            # print(self.motion)
     def idle_motion(self):
         if self.num == 1:
             Sprite.sprite_sheets.clip_draw(self.idle_frame[1] * sprite_size,
@@ -111,6 +125,17 @@ class player:
                                        885 - (266 + sprite_size),
                                        sprite_size, sprite_size,
                                        self.pos[0], self.pos[1])
+        elif self.num == 2:
+            if self.jump_frame[1] == 0:
+                Sprite.sprite_sheets.clip_composite_draw(self.jump_frame[1] * sprite_size,
+                                       885 - (266 + sprite_size * 2),
+                                       sprite_size, sprite_size,0,'h',
+                                       self.pos[0], self.pos[1],66,66)
+            else:
+                Sprite.sprite_sheets.clip_composite_draw((self.jump_frame[1] + 4) * sprite_size,
+                                       885 - (266 + sprite_size),
+                                       sprite_size, sprite_size,0,'h',
+                                       self.pos[0], self.pos[1],66,66)
 
         if self.update_frame % 5 == 0:
             if self.jump_frame[0]:
@@ -155,6 +180,11 @@ class player:
                                    885 - (266 + sprite_size * 2),
                                    sprite_size, sprite_size,
                                    self.pos[0], self.pos[1])
+        elif self.num == 2:
+            Sprite.sprite_sheets.clip_composite_draw((self.spike_frame[1] + 3) * sprite_size,
+                                   885 - (266 + sprite_size * 2),
+                                   sprite_size, sprite_size,0,'h',
+                                    self.pos[0], self.pos[1],66,66)
         if self.update_frame % 5 == 0:
             if self.spike_frame[0]:
                 self.spike_frame[1] += 1
