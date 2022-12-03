@@ -7,6 +7,7 @@ pos = [0, 0]
 textsize = [True, 154/2]         # flag, size
 start = 0
 
+selectpos = [0, [True,66], [True,66]]             # 왼쪽진영, [왼쪽 flag,왼쪽 사이즈], [오른쪽flag,오른쪽사이즈]
 mainscene = None
 
 def enter():
@@ -25,6 +26,8 @@ def home(eTime):
     text(eTime)
 
 def select(eTime):
+    background(eTime)
+    character(eTime)
     pass
 
 def background(eTime):
@@ -59,3 +62,31 @@ def text(eTime):
 
 # def update(eTime):
 #     draw(eTime)
+
+def character(eTime):
+    if selectpos[0] == 0:
+        selectpos[2] = [True, 66]
+        if selectpos[1][0]:
+            selectpos[1][1] += 200 * eTime
+            if selectpos[1][1] >= 132:
+                selectpos[1][0] = False
+        else:
+            selectpos[1][1] -= 200 * eTime
+            if selectpos[1][1] <= 66:
+                selectpos[1][0] = True
+    elif selectpos[0] == 1:
+        selectpos[1] = [True, 66]
+        if selectpos[2][0]:
+            selectpos[2][1] += 200 * eTime
+            if selectpos[2][1] >= 132:
+                selectpos[2][0] = False
+        else:
+            selectpos[2][1] -= 200 * eTime
+            if selectpos[2][1] <= 66:
+                selectpos[2][0] = True
+    Sprite.sprite_sheets.clip_draw(0, 885 - (266 + sprite_size),
+                                             sprite_size, sprite_size,
+                                             448/4, 224, selectpos[1][1], selectpos[1][1])
+    Sprite.sprite_sheets.clip_composite_draw(0, 885 - (266 + sprite_size),
+                                             sprite_size, sprite_size, 0, 'h',
+                                             448/4 * 3, 224, selectpos[2][1], selectpos[2][1])

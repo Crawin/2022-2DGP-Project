@@ -33,3 +33,6 @@ def keyboard_input(event):
                 Player.P1.dir[0] += 1
             case pico2d.SDLK_r:
                 Player.P1.dir[2] = False
+
+def main_input(event):
+    pass

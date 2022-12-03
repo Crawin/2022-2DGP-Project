@@ -18,10 +18,17 @@ def handle_events():            # 키보드 입력
             if SceneList[-1] == 'play':
                 Events.keyboard_input(event)
             elif SceneList[-1] == 'main':
+                # Events.main_input(event)
                 if event.type == SDL_KEYDOWN and event.key == pico2d.SDLK_RETURN:
-                    print('enter')
-                pass
-                # print('main key event')
+                    exit()
+                    MainScene.mainscene.pop()
+                    if len(MainScene.mainscene) == 0:
+                        SceneList.pop()
+                        enter('play')
+                elif event.type == SDL_KEYDOWN and event.key == pico2d.SDLK_RIGHT:
+                    MainScene.selectpos[0]=1
+                elif event.type == SDL_KEYDOWN and event.key == pico2d.SDLK_LEFT:
+                    MainScene.selectpos[0]=0
     return True
 
 def draw(eTime):
