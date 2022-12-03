@@ -7,21 +7,25 @@ pos = [0, 0]
 textsize = [True, 154/2]         # flag, size
 start = 0
 
-mainscene = []
+mainscene = None
 
 def enter():
-    mainscene = ['select', 'home']
+    global mainscene
+    mainscene = [select, home]
     pass
 
 def draw(eTime):
     clear_canvas()
-    home(eTime)
+    mainscene[-1](eTime)
     update_canvas()
     pass
 
 def home(eTime):
     background(eTime)
     text(eTime)
+
+def select(eTime):
+    pass
 
 def background(eTime):
     global start
