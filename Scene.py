@@ -5,36 +5,37 @@ import Map
 import Ball
 import Sprite
 import Events
+import MainScene
 
+SceneList= []
 
-def handle_events(type):            # 키보드 입력
+def handle_events():            # 키보드 입력
     events = get_events()
     for event in events:
         if event.type == SDL_KEYDOWN and event.key == pico2d.SDLK_ESCAPE:
             return False
         else:
-            Events.keyboard_input(event)
+            if SceneList[-1] == 'play':
+                Events.keyboard_input(event)
+            elif SceneList[-1] == 'main':
+                if event.type == SDL_KEYDOWN and event.key == pico2d.SDLK_RETURN:
+                    print('enter')
+                pass
+                # print('main key event')
     return True
 
-
-    # match type:
-    #     case 'play':
-    #         return Events.keyboard_input()
-    #         pass
-    #     case 'main':
-    #         pass
-    # return True
-
-def draw(type, eTime):
-    match type:
-        case 'play':
-            Map.draw()
-            Player.update(eTime)
-            Ball.update(eTime)
-        case 'main':
-            pass
+def draw(eTime):
+    if SceneList[-1] == 'play':
+        Map.draw()
+        Player.update(eTime)
+        Ball.update(eTime)
+    elif SceneList[-1] == 'main':
+        MainScene.draw(eTime)
+        # MainScene.update(eTime)
+        pass
 
 def enter(type):
+    SceneList.append(type)
     match type:
         case 'play':
             Map.enter()
@@ -42,13 +43,16 @@ def enter(type):
             Ball.enter()
             pass
         case 'main':
+            MainScene.enter()
             pass
 
-def exit(type):
-    match type:
-        case 'play':
-            Ball.exit()
-            Player.exit()
-            Map.exit()
-        case 'main':
-            pass
+def exit():
+    if SceneList[-1] == 'play':
+        Ball.exit()
+        Player.exit()
+        Map.exit()
+    elif SceneList[-1] == 'main':
+        pass
+
+def exit_running():
+    pass
