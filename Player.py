@@ -3,6 +3,7 @@ import Sprite
 from Define import *
 import Ball
 import math
+import MainScene
 
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
 RUN_SPEED_KMPH = 20 # Km / Hour
@@ -39,7 +40,6 @@ class player:
 
     def draw(self):
         self.motion_type[self.motion]()
-        print(self.pos[1])
 
     def move(self, eTime):
         global Move_Speed, Move_Speed2
@@ -52,11 +52,13 @@ class player:
                 self.pos[0] += self.dir[0] * Move_Speed * eTime # 좌우이동
             if self.num == 1:
                 self.pos[0] = clamp((sprite_size / 2), self.pos[0], 230 - 12 - (sprite_size /2))
+            elif self.num == 2:
+                self.pos[0] = clamp(230 + 12 + (sprite_size / 2), self.pos[0], 433 - (sprite_size / 2))
             if self.pos[1]-sprite_size == floor and self.dir[2] and self.motion == 'idle':   # 캐릭터가 바닥에 있고, 윗키가 눌린 상태면서 idle 상태면
                 self.dir[1] = Jump_Speed * eTime
             self.pos[1] += self.dir[1]        # 점프
             if self.pos[1]-sprite_size > floor:
-                self.dir[1] -= 1
+                self.dir[1] -= 80 * eTime
             else:
                 self.dir[1] = 0
                 self.pos[1] = floor +sprite_size
@@ -79,25 +81,29 @@ class player:
                     if abs(self.pos[0] - goalx) > 20 and x1 > 230 and self.motion == "idle" and y1 < 200:
                         self.motion = 'dive'
                         self.dive_frame[0] = self.dir[0]
-                        print(self.dive_frame[0])
                         Move_Speed2 = RUN_SPEED_PPS * 2
 
                     if self.motion == 'dive':
                         self.pos[0] += self.dive_frame[0] * Move_Speed2 * eTime  # 좌우이동
                         Move_Speed2 = max(0, Move_Speed2 - RUN_SPEED_PPS * 2 / 50)
-                    else:
+                    elif self.motion == 'idle':
                         self.pos[0] += self.dir[0] * Move_Speed2 * eTime  # 좌우이동
-                    self.pos[0] = clamp(230 + 12 + (sprite_size / 2), self.pos[0], 433 - (sprite_size / 2))
+                    if self.num == 1:
+                        self.pos[0] = clamp((sprite_size / 2), self.pos[0], 230 - 12 - (sprite_size /2))
+                        spikegoalx = (300-self.pos[1])*(5)/(-3) + self.pos[0]
+                    elif self.num == 2:
+                        self.pos[0] = clamp(230 + 12 + (sprite_size / 2), self.pos[0], 433 - (sprite_size / 2))
+                        spikegoalx = (300-self.pos[1])*(-5)/(-3) + self.pos[0]
 
                     if self.motion == 'idle' and (abs(self.pos[0] - spikex) < 20 or abs((self.pos[1] + sprite_size / 2 - 10) - y1) < 30):
                         self.dir[1] = Jump_Speed * eTime
                         self.dir[2] = True
-                    spikegoalx = (128-self.pos[1])*(-5)/(-3) + self.pos[0]
-                    if self.motion == 'jump' and spikegoalx < 230:
+
+                    if self.motion == 'jump' and ((self.num == 1 and spikegoalx < 230) or (self.num == 2 and spikegoalx > 238)):
                         self.motion = 'spike'
             self.pos[1] += self.dir[1]  # 점프
             if self.pos[1] - sprite_size > floor:
-                self.dir[1] -= 1
+                self.dir[1] -= 80 * eTime
             else:
                 self.dir[1] = 0
                 self.pos[1] = floor + sprite_size
@@ -221,8 +227,8 @@ class player:
             if self.dir[2]:
                 self.motion = 'jump'
 
-        if self.motion == 'jump':
-            if self.pos[1] -sprite_size <= floor:
+        if self.motion == 'jump' or self.motion == 'spike':
+            if self.pos[1] - sprite_size <= floor:
                 self.motion = 'idle'
 
         if self.motion == 'dive':
@@ -243,8 +249,12 @@ P2 = None
 def enter():
     global P1
     global P2
-    P1 = player(1, 'PLAYER')
-    P2 = player(2, 'AI')
+    if MainScene.selectpos[0] == 0:
+        P1 = player(1, 'PLAYER')
+        P2 = player(2, 'AI')
+    elif MainScene.selectpos[0] == 1:
+        P1 = player(1, 'AI')
+        P2 = player(2, 'PLAYER')
 
 def exit():
     global P1

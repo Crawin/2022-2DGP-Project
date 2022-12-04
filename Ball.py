@@ -16,7 +16,7 @@ BALL_SPEED_MPS = (BALL_SPEED_MPM / 60.0)
 BALL_SPEED_PPS = (BALL_SPEED_MPS * PIXEL_PER_METER)
 class C_ball:
     def __init__(self):
-        self.pos = [90, 300]
+        self.pos = [356, 300]
         self.prepos = []
         self.frame = [0, 0]         # 매 프레임마다 1씩 증가, 5프레임마다 1씩 증가
         self.dir = [0, -1]          # 방향벡터
@@ -40,7 +40,7 @@ class C_ball:
                                            self.spikePos[0], self.spikePos[1])
         else:
             self.spikeTime= 0
-        if self.coll == "spikeP1":
+        if self.coll == "spikeP1" or self.coll =='spikeP2':
             Sprite.sprite_sheets.clip_draw((7 * ball_size) + 87,
                                            885 - (157 + ball_size),
                                            ball_size, ball_size,
