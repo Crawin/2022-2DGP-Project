@@ -18,7 +18,6 @@ while running:
     frame_time += elapsed_time
     delay(0.01)
 
-Scene.exit('play')
-Scene.exit_running()
+Scene.exit()
 close_canvas()
 # -----------------------------------

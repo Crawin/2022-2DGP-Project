@@ -20,6 +20,7 @@ JUMP_SPEED_PPS = (JUMP_SPEED_MPS * PIXEL_PER_METER)
 Jump_Speed = JUMP_SPEED_PPS
 class player:
     def __init__(self, playerNum, type):
+        self.score = 0
         if playerNum == 1:
             self.pos = [90, floor + sprite_size]              # x, y 위치
         elif playerNum == 2:

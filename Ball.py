@@ -68,8 +68,12 @@ class C_ball:
         if self.pos[1] - ball_size/2 < floor:
             self.dir[1] = -self.dir[1]
             self.pos = [self.prepos[0],self.prepos[1]]
-            print("gameover")
+            if self.pos[0] < 230:
+                Player.P2.score += 1
+            else:
+                Player.P1.score += 1
             self.coll = "floor"
+            print(f"P1:{Player.P1.score} P2:{Player.P2.score}")
 
         if self.pos[1]> 448:
             self.dir[1] = -self.dir[1]
