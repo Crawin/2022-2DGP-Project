@@ -79,7 +79,6 @@ class C_ball:
                 Player.P1.score += 1
             self.coll = "floor"
             C_ball.bgm['collideground'].play()
-            print(f"P1:{Player.P1.score} P2:{Player.P2.score}")
 
         if self.pos[1]> 448:
             self.dir[1] = -self.dir[1]

@@ -44,15 +44,15 @@ def keyboard_input(event):
                     Player.P2.dir[0] -= 1
                 case pico2d.SDLK_UP:
                     Player.P2.dir[2] = True
-                case pico2d.SDLK_SPACE:
+                case pico2d.SDLK_RETURN:
                     if Player.P2.motion == 'idle':
                         Player.P2.motion = 'dive'
                         Player.Move_Speed = Player.RUN_SPEED_PPS * 2
                         Player.player.bgm['motion'].play()
-                        if Player.P2.dir[0] < 0:
-                            Player.P2.dive_frame[0] = -1            # z키를 눌렀을때 어디 방향을 보고 있는지 입력
+                        if Player.P2.dir[0] > 0:
+                            Player.P2.dive_frame[0] = 1            # z키를 눌렀을때 어디 방향을 보고 있는지 입력
                         else:
-                            Player.P2.dive_frame[0] = 1
+                            Player.P2.dive_frame[0] = -1
                     elif Player.P2.motion == 'jump':
                         Player.P2.motion = 'spike'
                         Player.player.bgm['spike'].play()

@@ -48,6 +48,16 @@ class player:
 
     def draw(self):
         self.motion_type[self.motion]()
+        if self.num == 1:
+            Sprite.sprite_sheets.clip_draw(self.score * 34 + 203,
+                                           885-153,
+                                           34, 27,
+                                           50, 400)
+        elif self.num == 2:
+            Sprite.sprite_sheets.clip_draw(self.score * 34 + 203,
+                                           885-153,
+                                           34, 27,
+                                           446 - 50, 400)
 
     def move(self, eTime):
         global Move_Speed, Move_Speed2
@@ -86,11 +96,19 @@ class player:
                         self.dir[0] = -1
                     else:
                         self.dir[0] = 0
-                    if abs(self.pos[0] - goalx) > 20 and x1 > 230 and self.motion == "idle" and y1 < 200:
-                        self.motion = 'dive'
-                        player.bgm['motion'].play()
-                        self.dive_frame[0] = self.dir[0]
-                        Move_Speed2 = RUN_SPEED_PPS * 2
+                    if abs(self.pos[0] - goalx) > 20 and self.motion == "idle" and y1 < 200:
+                        if self.num == 1:
+                            if x1 < 230:
+                                self.motion = 'dive'
+                                player.bgm['motion'].play()
+                                self.dive_frame[0] = self.dir[0]
+                                Move_Speed2 = RUN_SPEED_PPS * 2
+                        elif self.num == 2:
+                            if x1 > 230:
+                                self.motion = 'dive'
+                                player.bgm['motion'].play()
+                                self.dive_frame[0] = self.dir[0]
+                                Move_Speed2 = RUN_SPEED_PPS * 2
 
                     if self.motion == 'dive':
                         self.pos[0] += self.dive_frame[0] * Move_Speed2 * eTime  # 좌우이동
