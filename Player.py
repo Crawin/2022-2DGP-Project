@@ -274,6 +274,19 @@ class player:
         self.draw()
         self.update_frame += 1
 
+    def restart(self):
+        if self.num == 1:
+            self.pos = [90, floor + sprite_size]  # x, y 위치
+        elif self.num == 2:
+            self.pos = [358, floor + sprite_size]  # x, y 위치
+        self.update_frame = 0  # 입력 딜레이가 0.01이여야 조작감이 좋아서 애니메이션은 딜레이가 0.1이 되도록 하는 변수
+
+        self.idle_frame = [True, 0]  # True 면 프레임 +, False 면 프레임 -
+        self.jump_frame = [True, 1]  # Flag, frame
+        self.spike_frame = [True, 0]  # Flag, frame
+        self.dive_frame = [0, 0, 0]  # head, frame, Timer
+        self.motion = 'idle'
+
 P1 = None
 P2 = None
 def enter():
@@ -295,3 +308,7 @@ def exit():
 def update(eTime):
     P1.update(eTime)
     P2.update(eTime)
+
+def restart():
+    P1.restart()
+    P2.restart()

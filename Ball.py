@@ -75,10 +75,22 @@ class C_ball:
             self.pos = [self.prepos[0],self.prepos[1]]
             if self.pos[0] < 230:
                 Player.P2.score += 1
+                self.pos = [356, 300]
             else:
                 Player.P1.score += 1
+                self.pos = [92, 300]
             self.coll = "floor"
             C_ball.bgm['collideground'].play()
+            self.pos = [356, 300]
+            self.prepos = []
+            self.frame = [0, 0]  # 매 프레임마다 1씩 증가, 5프레임마다 1씩 증가
+            self.dir = [0, -1]  # 방향벡터
+            self.vel = BALL_SPEED_PPS
+            self.coll = ""
+            self.spikeTime = 0
+            self.spikePos = [0, 0]
+            Player.restart()
+
 
         if self.pos[1]> 448:
             self.dir[1] = -self.dir[1]
