@@ -19,6 +19,7 @@ JUMP_SPEED_MPS = (JUMP_SPEED_MPM / 60.0)
 JUMP_SPEED_PPS = (JUMP_SPEED_MPS * PIXEL_PER_METER)
 Jump_Speed = JUMP_SPEED_PPS
 class player:
+    bgm = None
     def __init__(self, playerNum, type):
         self.score = 0
         if playerNum == 1:
@@ -38,6 +39,12 @@ class player:
         self.motion = 'idle'
         self.motion_type = {'idle': self.idle_motion, 'dive': self.dive_motion,
                             'jump': self.jump_motion, 'spike': self.spike_motion}
+
+        if player.bgm is None:
+            player.bgm = {'motion':load_wav('Resource/Bgm/motion.wav'),'spike':load_wav('Resource/Bgm/spike.wav')}
+            player.bgm['motion'].set_volume(18)
+            player.bgm['spike'].set_volume(18)
+
 
     def draw(self):
         self.motion_type[self.motion]()
@@ -81,6 +88,7 @@ class player:
                         self.dir[0] = 0
                     if abs(self.pos[0] - goalx) > 20 and x1 > 230 and self.motion == "idle" and y1 < 200:
                         self.motion = 'dive'
+                        player.bgm['motion'].play()
                         self.dive_frame[0] = self.dir[0]
                         Move_Speed2 = RUN_SPEED_PPS * 2
 
@@ -102,6 +110,7 @@ class player:
 
                     if self.motion == 'jump' and ((self.num == 1 and spikegoalx < 230) or (self.num == 2 and spikegoalx > 238)):
                         self.motion = 'spike'
+                        player.bgm['spike'].play()
             self.pos[1] += self.dir[1]  # 점프
             if self.pos[1] - sprite_size > floor:
                 self.dir[1] -= 80 * eTime
@@ -227,10 +236,12 @@ class player:
         if self.motion == 'idle':
             if self.dir[2]:
                 self.motion = 'jump'
+                player.bgm['motion'].play()
 
         if self.motion == 'jump' or self.motion == 'spike':
             if self.pos[1] - sprite_size <= floor:
                 self.motion = 'idle'
+                self.dir[2] = False
 
         if self.motion == 'dive':
             if self.dive_frame[2] >= 5:     # 5프레임이 지나면 idle로 복귀

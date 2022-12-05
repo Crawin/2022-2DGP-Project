@@ -15,6 +15,7 @@ BALL_SPEED_MPM = (BALL_SPEED_KMPH * 1000.0 / 60.0)
 BALL_SPEED_MPS = (BALL_SPEED_MPM / 60.0)
 BALL_SPEED_PPS = (BALL_SPEED_MPS * PIXEL_PER_METER)
 class C_ball:
+    bgm = None
     def __init__(self):
         self.pos = [356, 300]
         self.prepos = []
@@ -24,6 +25,10 @@ class C_ball:
         self.coll = ""
         self.spikeTime = 0
         self.spikePos = [0,0]
+        if C_ball.bgm is None:
+            C_ball.bgm = {'collideball':load_wav('Resource/Bgm/collideball.wav'),'collideground':load_wav('Resource/Bgm/collideground.wav')}
+            C_ball.bgm['collideball'].set_volume(18)
+            C_ball.bgm['collideground'].set_volume(18)
 
     def draw(self):
         Sprite.sprite_sheets.clip_draw((self.frame[1] * ball_size) + 87,
@@ -73,6 +78,7 @@ class C_ball:
             else:
                 Player.P1.score += 1
             self.coll = "floor"
+            C_ball.bgm['collideground'].play()
             print(f"P1:{Player.P1.score} P2:{Player.P2.score}")
 
         if self.pos[1]> 448:
@@ -106,6 +112,7 @@ class C_ball:
                 self.spikePos = [self.pos[0],self.pos[1]]
                 self.dir = [5, -3]
                 self.pos = [self.prepos[0],self.prepos[1]]
+                C_ball.bgm['collideball'].play()
         elif Player.P1.motion == 'dive' and self.coll != "P1":
             if self.aabb(Player.P1.pos[0] + sprite_size / 2,
                          Player.P1.pos[0] - sprite_size / 2,
@@ -138,6 +145,8 @@ class C_ball:
                 self.spikePos = [self.pos[0],self.pos[1]]
                 self.dir = [-5, -3]
                 self.pos = [self.prepos[0],self.prepos[1]]
+                C_ball.bgm['collideball'].play()
+
         elif Player.P2.motion == 'dive' and self.coll != "P2":
             if self.aabb(Player.P2.pos[0] + sprite_size / 2,
                          Player.P2.pos[0] - sprite_size / 2,

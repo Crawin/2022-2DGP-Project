@@ -22,15 +22,20 @@ class cloud:
         self.speed = randint(1, 2)
 
 clouds = None
+BGM = None
 def enter():
-    global clouds
+    global clouds, BGM
     clouds = [cloud() for i in range(0, 10)]
+    BGM = load_music('Resource/Bgm/bgm.mp3')
+    BGM.set_volume(18)
+    BGM.repeat_play()
 
 def exit():
-    global clouds
+    global clouds, BGM
     for cloud in clouds:
         del cloud
     del clouds
+    del BGM
 
 def draw():
     clear_canvas()
