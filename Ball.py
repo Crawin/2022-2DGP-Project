@@ -59,7 +59,8 @@ class C_ball:
         self.dir[1] = self.dir[1] - 0.1
         self.pos[0] += self.dir[0] * self.vel * eTime
         self.pos[1] += self.dir[1] * self.vel * eTime
-        self.collision(eTime)
+        if Player.P1.motion != 'gameset':
+            self.collision(eTime)
 
     def aabb(self,rx,lx,ty,by):
         draw_rectangle(lx, by, rx, ty)

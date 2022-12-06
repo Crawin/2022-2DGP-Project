@@ -1,4 +1,6 @@
 from pico2d import *
+
+import Scene
 import Sprite
 from Define import *
 import Ball
@@ -18,6 +20,8 @@ JUMP_SPEED_MPM = (JUMP_SPEED_KMPH * 1000.0 / 60.0)
 JUMP_SPEED_MPS = (JUMP_SPEED_MPM / 60.0)
 JUMP_SPEED_PPS = (JUMP_SPEED_MPS * PIXEL_PER_METER)
 Jump_Speed = JUMP_SPEED_PPS
+
+Goal_score = 7
 class player:
     bgm = None
     def __init__(self, playerNum, type):
@@ -35,15 +39,18 @@ class player:
         self.jump_frame = [True, 1]         # Flag, frame
         self.spike_frame = [True, 0]        # Flag, frame
         self.dive_frame = [0, 0, 0]     # head, frame, Timer
+        self.gameset_frame = 0              # 264 463       132 530
 
         self.motion = 'idle'
         self.motion_type = {'idle': self.idle_motion, 'dive': self.dive_motion,
-                            'jump': self.jump_motion, 'spike': self.spike_motion}
+                            'jump': self.jump_motion, 'spike': self.spike_motion,
+                            'gameset': self.gameset_motion}
 
         if player.bgm is None:
-            player.bgm = {'motion':load_wav('Resource/Bgm/motion.wav'),'spike':load_wav('Resource/Bgm/spike.wav')}
+            player.bgm = {'motion':load_wav('Resource/Bgm/motion.wav'),'spike':load_wav('Resource/Bgm/spike.wav'), 'gameset':load_wav('Resource/Bgm/gameset.wav')}
             player.bgm['motion'].set_volume(18)
             player.bgm['spike'].set_volume(18)
+            player.bgm['gameset'].set_volume(18)
 
 
     def draw(self):
@@ -58,6 +65,11 @@ class player:
                                            885-153,
                                            34, 27,
                                            446 - 50, 400)
+        if P1.score == Goal_score or P2.score == Goal_score:        # 126 84
+            Sprite.sprite_sheets.clip_draw(126,
+                                           885-84,
+                                           93, 17,
+                                           223, 446*3/4, 93+self.update_frame, 17+self.update_frame)
 
     def move(self, eTime):
         global Move_Speed, Move_Speed2
@@ -250,6 +262,32 @@ class player:
                     self.spike_frame[0] = True
                     self.motion = 'jump'
 
+    def gameset_motion(self):
+        if self.score == Goal_score:
+            if self.gameset_frame <3:
+                Sprite.sprite_sheets.clip_draw((self.gameset_frame + 4) * sprite_size,
+                                       885 - 463,
+                                       sprite_size, sprite_size,
+                                       self.pos[0], self.pos[1])
+            else:
+                Sprite.sprite_sheets.clip_draw((self.gameset_frame - 3) * sprite_size,
+                                       885 - 530,
+                                       sprite_size, sprite_size,
+                                       self.pos[0], self.pos[1])
+        else:
+            Sprite.sprite_sheets.clip_draw((self.gameset_frame + 2) * sprite_size,
+                                           885 - 530,
+                                           sprite_size, sprite_size,
+                                           self.pos[0], self.pos[1])
+
+        if self.update_frame % 20 == 0:
+            self.gameset_frame += 1
+            if self.gameset_frame > 4:
+                self.gameset_frame = 4
+
+
+
+
     def update_motion(self):
         if self.motion == 'idle':
             if self.dir[2]:
@@ -268,8 +306,14 @@ class player:
                 self.motion = 'idle'
                 self.dive_frame = [0, 0, 0]
 
+        if (P1.score == Goal_score or P2.score == Goal_score) and self.motion != 'gameset':
+            self.motion = 'gameset'
+            self.dir = [0, 0, False]
+            player.bgm['gameset'].play()
+
     def update(self, eTime):
-        self.move(eTime)
+        if self.motion != 'gameset':
+            self.move(eTime)
         self.update_motion()
         self.draw()
         self.update_frame += 1
@@ -286,6 +330,8 @@ class player:
         self.spike_frame = [True, 0]  # Flag, frame
         self.dive_frame = [0, 0, 0]  # head, frame, Timer
         self.motion = 'idle'
+
+
 
 P1 = None
 P2 = None
