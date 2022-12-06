@@ -63,7 +63,7 @@ class C_ball:
             self.collision(eTime)
 
     def aabb(self,rx,lx,ty,by):
-        draw_rectangle(lx, by, rx, ty)
+        # draw_rectangle(lx, by, rx, ty)
         if (self.pos[0] - ball_size / 2 > rx) or (self.pos[0] + ball_size / 2 < lx):
             return False
         if (self.pos[1] - ball_size / 2 > ty) or (self.pos[1] + ball_size / 2 < by):
@@ -82,7 +82,6 @@ class C_ball:
                 self.pos = [92, 300]
             self.coll = "floor"
             C_ball.bgm['collideground'].play()
-            self.pos = [356, 300]
             self.prepos = []
             self.frame = [0, 0]  # 매 프레임마다 1씩 증가, 5프레임마다 1씩 증가
             self.dir = [0, -1]  # 방향벡터
